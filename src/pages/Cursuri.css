@@ -1,0 +1,115 @@
+.cursuri-page {
+  min-height: 100vh;
+  background: var(--noma-page-bg);
+  padding: 2rem 1.5rem 4rem;
+}
+
+.cursuri-container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.cursuri-container h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  color: #2b1910;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.cursuri-intro {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #5a4a3b;
+  margin: 0 0 3rem;
+}
+
+.cursuri-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.curs-card {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.curs-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.curs-card h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  color: #2b1910;
+  margin: 0 0 0.5rem;
+}
+
+.curs-meta {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #b8956a;
+  margin: 0 0 1rem;
+}
+
+.curs-card p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4a3a2b;
+  margin: 0;
+}
+
+.curs-cta {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, #d9b89b, #c9a88b);
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(184, 149, 106, 0.3);
+}
+
+.curs-cta p {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0 0 1.2rem;
+  font-weight: 500;
+}
+
+.curs-btn {
+  display: inline-block;
+  padding: 0.9rem 2.5rem;
+  background: #fff;
+  color: #4a3a2b;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.curs-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .cursuri-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .curs-card {
+    padding: 1.5rem;
+  }
+
+  .curs-cta {
+    padding: 2rem 1.5rem;
+  }
+}

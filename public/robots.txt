@@ -1,0 +1,37 @@
+# NOMA Studio Design - Robots.txt
+# Updated: 2026
+
+User-agent: *
+Allow: /
+Allow: /portofoliu
+Allow: /servicii
+Allow: /despre
+Allow: /blog
+Allow: /contact
+Allow: /cursuri
+
+Disallow: /api/
+Disallow: /admin/
+Disallow: /*.json$
+Disallow: /*?*utm_
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://nomastudio.ro/sitemap.xml
+
+# Google Bot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing Bot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Yandex Bot
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1

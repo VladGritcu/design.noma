@@ -1,0 +1,346 @@
+/* ============================================
+   MESSENGER WIDGET NOMA – floating contact
+   Telefon · WhatsApp · Viber · Telegram
+   ============================================= */
+
+.noma-contact-widget {
+  position: fixed;
+  bottom: 28px;
+  left: 24px;
+  z-index: 10000;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Buton principal (chat / X) */
+.noma-contact-toggle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6FB48C, #88C3A0);
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease-out;
+}
+
+/* icon chat / X (rotație X la deschidere) */
+.noma-contact-toggle i {
+  font-size: 1.6rem;
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.noma-x-rotate {
+  transform: rotate(-180deg);
+}
+
+/* inel puls permanent */
+.noma-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(255,255,255,0.55);
+  animation: noma-pulse 2.4s infinite !important;
+  display: block !important;
+}
+
+@keyframes noma-pulse {
+  0%   { transform: scale(0.9); opacity: 1;   }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* Meniu vertical – inițial ascuns */
+.noma-contact-menu {
+  position: absolute;
+  bottom: 70px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.22s cubic-bezier(0.4,0,0.2,1),
+              transform 0.22s cubic-bezier(0.4,0,0.2,1),
+              visibility 0.22s;
+}
+
+/* când widgetul e deschis */
+.noma-contact-widget.noma-open .noma-contact-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* toate cercurile au aceeași dimensiune */
+.noma-menu-circle {
+  width: 60px;
+  opacity: 1;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  transform: translateX(0) translateY(0) scale(1);
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+  transition:
+    transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.26s ease-out,
+    filter 0.26s ease-out,
+    opacity 0.2s ease-out;
+}
+
+/* hover „buton fizic" */
+@media (hover:hover) and (pointer:fine){
+  .noma-menu-circle:hover {
+    transform: translateY(-8px) scale(1.08);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.30);
+    filter: brightness(1.07) saturate(1.05);
+    opacity: 1;
+  }
+}
+
+.noma-menu-circle i {
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (hover:hover) and (pointer:fine){
+  .noma-menu-circle:hover i {
+    transform: translateY(-2px);
+  }
+}
+
+/* iconițe din cercuri */
+.noma-menu-circle i {
+  font-size: 1.6rem;
+}
+
+/* iconiță telefon mai mică, ca Telegram */
+.noma-phone i {
+  font-size: 1.3rem;
+}
+
+/* culori pastel, spre bej/soft */
+.noma-phone    { background: #5BAA8B; }
+.noma-whatsapp { background: #7BC79A; }
+.noma-viber    { background: #9D8AD8; }
+.noma-telegram { background: #7BAACC; }
+
+/* responsive – widget mobil aliniat cu desktop */
+@media (max-width: 768px) {
+  .noma-contact-widget {
+    bottom: 32px;
+    left: 24px;
+  }
+
+  .noma-contact-toggle,
+  .noma-menu-circle {
+    width: 54px;
+    height: 54px;
+  }
+
+  .noma-contact-toggle i,
+  .noma-menu-circle i {
+    font-size: 1.5rem;
+  }
+
+  .noma-phone i {
+    font-size: 1.2rem;
+  }
+
+  .noma-contact-menu {
+    bottom: 72px;
+    gap: 8px;
+  }
+}
+
+/* ============================================
+   MESSENGER WIDGET NOMA – efect WOW (glow + pop-in)
+   ============================================= */
+
+/* glow radial în jurul butonului când e deschis meniul */
+.noma-contact-widget.noma-open::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center,
+              rgba(143, 200, 170, 0.38) 0,
+              rgba(143, 200, 170, 0.0) 70%);
+  filter: blur(6px);
+  opacity: 0;
+  animation: noma-glow-in 0.45s ease-out forwards;
+  pointer-events: none;
+}
+
+/* buton principal – jump & twist când e deschis */
+.noma-contact-widget.noma-open .noma-contact-toggle {
+  transform: translateY(-3px) scale(1.08) rotate(-10deg);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+}
+
+@keyframes noma-glow-in {
+  0%   { opacity: 0; transform: scale(0.8); }
+  60%  { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.9; transform: scale(1); }
+}
+
+/* burst pe buton la click */
+.noma-contact-toggle.noma-click-burst::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle,
+              rgba(255,255,255,0.7) 0,
+              transparent 70%);
+  opacity: 0;
+  animation: noma-burst 0.45s ease-out;
+  pointer-events: none;
+}
+
+@keyframes noma-burst {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  70%  { transform: scale(1.35); opacity: 0.4; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* iconițe meniu – stare inițială pentru pop-in */
+.noma-menu-circle {
+  transform: translateX(-8px) translateY(8px) scale(0.8);
+  opacity: 0;
+}
+
+/* pop‑in cu stagger (clasa e pusă din JS) */
+.noma-menu-circle.noma-pop-in {
+  animation: noma-pop-in 0.35s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-delay: var(--noma-delay, 0ms);
+}
+
+@keyframes noma-pop-in {
+  0% {
+    transform: translateX(-10px) translateY(12px) scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(2px) translateY(-4px) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   MESSENGER WIDGET NOMA – hover compact & rafinat
+   ============================================= */
+
+.noma-contact-toggle,
+.noma-menu-circle {
+  transition:
+    transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.28s ease-out,
+    opacity 0.2s ease-out;
+}
+
+/* Buton principal – hover */
+.noma-contact-toggle:hover {
+  transform: translateY(-4px) scale(1.06);
+  box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.10),
+      0 18px 34px rgba(0, 0, 0, 0.20);
+}
+
+/* Iconițe meniu – hover */
+.noma-menu-circle:hover {
+  transform: translateX(6px) translateY(-2px) scale(1.07);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.05),
+    0 9px 18px rgba(0, 0, 0, 0.10),
+    0 14px 26px rgba(0, 0, 0, 0.13);
+  opacity: 0.98;
+}
+
+/* ============================================
+   MESSENGER WIDGET NOMA – focus elegant pe buton
+   ============================================= */
+
+.noma-contact-toggle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 5px rgba(111, 180, 140, 0.55);
+}
+
+.noma-contact-toggle:focus {
+  outline: none;
+}
+
+/* ============================================
+   MESSENGER WIDGET NOMA – mobile tap cleanup
+   ============================================= */
+
+.noma-contact-toggle,
+.noma-menu-circle {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .noma-contact-toggle:focus,
+  .noma-menu-circle:focus {
+    outline: none;
+  }
+}
+
+/* ============================================
+   NOMA CONTACT TOGGLE – ATTENTION ANIMATION
+   ============================================= */
+
+@keyframes noma-attention-pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.6; }
+  70%  { transform: scale(1.6);  opacity: 0;   }
+  100% { transform: scale(1.6);  opacity: 0;   }
+}
+
+@keyframes noma-attention-bounce {
+  0%   { transform: scale(1);    }
+  18%  { transform: scale(1.18); }
+  32%  { transform: scale(0.93); }
+  46%  { transform: scale(1.10); }
+  60%  { transform: scale(0.97); }
+  74%  { transform: scale(1.04); }
+  88%  { transform: scale(0.99); }
+  100% { transform: scale(1);    }
+}
+
+/* ring-ul de atenție — separat de noma-pulse-ring existent */
+.noma-contact-toggle.noma-attention::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(111, 180, 140, 0.55);
+  z-index: -1;
+  animation: noma-attention-pulse-ring 0.9s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  pointer-events: none;
+}
+
+.noma-contact-toggle.noma-attention {
+  animation: noma-attention-bounce 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noma-contact-toggle.noma-attention,
+  .noma-contact-toggle.noma-attention::before {
+    animation: none !important;
+  }
+}

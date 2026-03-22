@@ -1,0 +1,547 @@
+/* =========================================================
+   HERO
+========================================================= */
+
+.servicii-hero {
+  background-color: var(--noma-page-bg, #f5f1eb);
+  padding: 120px 0 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.servicii-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(185, 154, 100, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--noma-gold, #b8956a);
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards 0.1s;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 400;
+  color: var(--color-dark, #2a2118);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards 0.2s;
+}
+
+.hero-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards 0.3s;
+}
+
+.divider-line {
+  display: block;
+  width: 235px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--noma-gold, #b8956a), transparent);
+}
+
+.divider-diamond {
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: var(--noma-gold, #b8956a);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.page-subtitle {
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: var(--color-medium, #5a4a3b);
+  max-width: 460px;
+  margin: 0 auto;
+  line-height: 1.65;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards 0.4s;
+}
+
+/* =========================================================
+   KEYFRAMES
+========================================================= */
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* =========================================================
+   PRICING SECTION
+========================================================= */
+
+.pricing-section {
+  padding: 56px 0 64px;
+  background-color: var(--noma-page-bg, #f5f1eb);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.pricing-grid .fade-in:nth-child(1) { animation-delay: 0.05s; }
+.pricing-grid .fade-in:nth-child(2) { animation-delay: 0.15s; }
+.pricing-grid .fade-in:nth-child(3) { animation-delay: 0.25s; }
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.pricing-card {
+  background: #ffffff;
+  padding: 28px 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 178, 156, 0.18);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: visible;
+  /* tranziții specifice — fără box-shadow în will-change */
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.5s ease,
+              opacity 0.5s ease;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* linie aurie sus */
+.pricing-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--noma-gold, #b8956a), transparent);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+  opacity: 0;
+}
+
+/* glow jos */
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(185, 154, 100, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+
+.pricing-card:hover {
+  transform: translate3d(0, -10px, 0) scale(1.015);
+  border-color: rgba(185, 154, 100, 0.45);
+  box-shadow:
+    0 12px 24px rgba(185, 154, 100, 0.1),
+    0 32px 48px rgba(0, 0, 0, 0.07);
+}
+
+.pricing-card:hover::after {
+  transform: translateX(-50%) scaleX(1);
+  opacity: 1;
+}
+
+.pricing-card:hover::before {
+  opacity: 1;
+}
+
+/* =========================================================
+   FEATURED
+========================================================= */
+
+.pricing-card.featured {
+  border: 1.5px solid rgba(185, 154, 100, 0.55);
+  background-color: #fffdf9;
+  box-shadow:
+    0 4px 12px rgba(185, 154, 100, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.05);
+  padding-top: 40px;
+}
+
+.pricing-card.featured::after {
+  transform: translateX(-50%) scaleX(0.5);
+  opacity: 0.35;
+}
+
+.pricing-card.featured:hover {
+  transform: translate3d(0, -10px, 0) scale(1.015);
+  border-color: rgba(185, 154, 100, 0.75);
+  box-shadow:
+    0 16px 32px rgba(185, 154, 100, 0.13),
+    0 40px 64px rgba(0, 0, 0, 0.07);
+}
+
+.pricing-card.featured:hover::after {
+  transform: translateX(-50%) scaleX(1);
+  opacity: 1;
+}
+
+/* =========================================================
+   HOVER EFFECTS
+========================================================= */
+
+.feature-item svg {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  color: var(--noma-gold, #b8956a);
+  margin-top: 2px;
+  transition: filter 0.4s ease;
+  filter: drop-shadow(0 0 0px transparent);
+}
+
+.pricing-card:hover .feature-item svg {
+  filter: drop-shadow(0 0 4px rgba(185, 154, 100, 0.6));
+}
+
+.pricing-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-dark, #2a2118);
+  margin-bottom: 4px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: color 0.4s ease;
+}
+
+.pricing-card:hover .pricing-title {
+  color: #110b06;
+}
+
+.pricing-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--noma-gold, #b8956a);
+  text-align: center;
+  margin: 10px 0 4px;
+  transition: text-shadow 0.4s ease;
+}
+
+.pricing-card:hover .pricing-price {
+  text-shadow: 0 0 20px rgba(185, 154, 100, 0.3);
+}
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.popular-badge {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #b8956a, #8a6a45);
+  color: #ffffff;
+  padding: 6px 22px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 20px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(185, 154, 100, 0.35);
+  transition: box-shadow 0.4s ease;
+}
+
+.pricing-card.featured:hover .popular-badge {
+  box-shadow:
+    0 4px 16px rgba(185, 154, 100, 0.55),
+    0 0 28px rgba(185, 154, 100, 0.28);
+}
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+.pricing-subtitle {
+  font-size: 11px;
+  color: var(--color-medium, #5a4a3b);
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.pricing-note {
+  font-size: 11px;
+  color: var(--color-medium, #5a4a3b);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.pricing-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  padding-left: 0;
+  border-top: 1px solid rgba(201, 178, 156, 0.15);
+  list-style: none;
+  flex: 1;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--color-dark, #2a2118);
+  font-size: 14.5px;
+  line-height: 1.5;
+  list-style: none;
+}
+
+.feature-subitem {
+  padding-left: 27px;
+  color: var(--color-medium, #5a4a3b);
+  font-size: 13px;
+  margin-top: -4px;
+  line-height: 1.5;
+  list-style: none;
+}
+
+.pricing-warning {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(201, 178, 156, 0.08);
+  border-left: 2px solid var(--noma-gold, #b8956a);
+  font-size: 12px;
+  color: var(--color-medium, #5a4a3b);
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CTA BUTON
+========================================================= */
+
+.pricing-cta {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 8px;
+  opacity: 0;
+  font-size: 0;
+}
+
+.pricing-card:has(.pricing-cta:focus-visible) {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   FADE-IN cu IntersectionObserver
+========================================================= */
+
+.pricing-card.fade-in {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 0.5s ease,
+              transform 0.5s ease,
+              border-color 0.5s ease;
+}
+
+.pricing-card.fade-in.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+    margin: 0 auto;
+    gap: 32px;
+  }
+
+  .pricing-card:hover {
+    transform: translate3d(0, -6px, 0) scale(1.01);
+  }
+
+  .pricing-card.featured:hover {
+    transform: translate3d(0, -6px, 0) scale(1.01);
+  }
+}
+
+/* =========================================================
+   MOBIL
+========================================================= */
+
+@media (max-width: 768px) {
+  .servicii-hero {
+    padding: 90px 0 32px;
+  }
+
+  .page-title {
+    font-size: clamp(26px, 7vw, 36px);
+    letter-spacing: -0.3px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    padding: 0 8px;
+  }
+
+  .divider-line {
+    width: 140px;
+  }
+
+  .pricing-section {
+    padding: 20px 0 36px;
+  }
+
+  .pricing-grid {
+    max-width: 100%;
+    gap: 28px;
+    padding: 0 4px;
+  }
+
+  .pricing-card {
+    padding: 22px 18px;
+    /* dezactivează toate efectele grele pe mobil */
+    will-change: auto;
+    transform: none;
+    transition: border-color 0.3s ease, opacity 0.3s ease;
+  }
+
+  .pricing-card.featured {
+    padding-top: 36px;
+  }
+
+  /* dezactivează complet hover pe touch */
+  .pricing-card:hover,
+  .pricing-card.featured:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: rgba(201, 178, 156, 0.18) !important;
+  }
+
+  .pricing-card.featured:hover {
+    border-color: rgba(185, 154, 100, 0.55) !important;
+    box-shadow:
+      0 4px 12px rgba(185, 154, 100, 0.08),
+      0 16px 32px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .pricing-card:hover::after,
+  .pricing-card:hover::before {
+    opacity: 0 !important;
+    transform: translateX(-50%) scaleX(0) !important;
+  }
+
+  .pricing-card:hover .feature-item svg {
+    filter: none !important;
+  }
+
+  .pricing-card:hover .pricing-title {
+    color: var(--color-dark, #2a2118) !important;
+  }
+
+  .pricing-card:hover .pricing-price {
+    text-shadow: none !important;
+  }
+
+  .pricing-card.fade-in {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+
+  .pricing-title {
+    font-size: 18px;
+  }
+
+  .pricing-price {
+    font-size: 30px;
+    margin: 8px 0 4px;
+  }
+
+  .feature-item {
+    font-size: 13.5px;
+  }
+
+  .feature-subitem {
+    font-size: 12px;
+    padding-left: 22px;
+  }
+
+  .popular-badge {
+    font-size: 9px;
+    padding: 5px 16px;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* =========================================================
+   MOBIL MIC
+========================================================= */
+
+@media (max-width: 400px) {
+  .pricing-card {
+    padding: 20px 14px;
+  }
+
+  .pricing-price {
+    font-size: 26px;
+  }
+
+  .pricing-title {
+    font-size: 17px;
+  }
+
+  .feature-item {
+    font-size: 13px;
+    gap: 8px;
+  }
+}

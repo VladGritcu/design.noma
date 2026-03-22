@@ -1,0 +1,181 @@
+export type Language = 'ro' | 'ru' | 'en';
+
+export interface Translations {
+  nav: {
+    home: string;
+    about: string;
+    services: string;
+    portfolio: string;
+    courses: string;
+    contact: string;
+  };
+  hero: {
+    viewProject: string;
+  };
+  home: {
+    whatWeOffer: string;
+    servicesSubtitle: string;
+    interiorDesign: string;
+    interiorDesignDesc: string;
+    exteriorDesign: string;
+    exteriorDesignDesc: string;
+    viewAllServices: string;
+    aboutTitle: string;
+    aboutText: string;
+    aboutLink: string;
+  };
+  services: {
+    pageTitle: string;
+    pageSubtitle: string;
+    mostPopular: string;
+    basicTitle: string;
+    technicTitle: string;
+    signatureTitle: string;
+    signatureSubtitle: string;
+    signatureNote: string;
+    signatureWarning: string;
+    features: {
+      siteVisit: string;
+      surveyPlan: string;
+      furniturePlan: string;
+      partitionPlan: string;
+      renders3d: string;
+      techAlbum: string;
+      furnitureVariants: string;
+      renders3dModifiable: string;
+      postConsultancy: string;
+      interiorCompartments: string;
+      partnerVisits: string;
+      flooring: string;
+      lighting: string;
+      hardFurniture: string;
+      softFurniture: string;
+      sanitary: string;
+      siteSupervision: string;
+    };
+    comparison: string;
+    comparisonHeaders: {
+      feature: string;
+      basic: string;
+      technic: string;
+      signature: string;
+    };
+    comparisonRows: {
+      siteVisit: string;
+      surveyPlan: string;
+      techAlbum: string;
+      furnitureVariants: string;
+      renders3d: string;
+      postConsultancy: string;
+      partnerVisits: string;
+      siteSupervision: string;
+    };
+  };
+  about: {
+    pageTitle: string;
+    pageSubtitle: string;
+    sectionTitle: string;
+    text1: string;
+    text2: string;
+    text3: string;
+    valuesTitle: string;
+    excellence: string;
+    excellenceDesc: string;
+    punctuality: string;
+    punctualityDesc: string;
+    innovation: string;
+    innovationDesc: string;
+    personalization: string;
+    personalizationDesc: string;
+    statsProjects: string;
+    statsExperience: string;
+    statsClients: string;
+    statsAwards: string;
+  };
+  contact: {
+    pageTitle: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    phoneLabel: string;
+    phonePlaceholder: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    submitDesktop: string;
+    submitMobile: string;
+    successMessage: string;
+    visitUs: string;
+    visitAddress: string;
+    callUs: string;
+    callInfo: string;
+    writeUs: string;
+    writeInfo: string;
+  };
+  courses: {
+    pageTitle: string;
+    intro: string;
+    course1Title: string;
+    course1Meta: string;
+    course1Desc: string;
+    course2Title: string;
+    course2Meta: string;
+    course2Desc: string;
+    course3Title: string;
+    course3Meta: string;
+    course3Desc: string;
+    ctaText: string;
+    ctaButton: string;
+  };
+  blog: {
+    pageTitle: string;
+    intro: string;
+    post1Title: string;
+    post1Date: string;
+    post1Excerpt: string;
+    post2Title: string;
+    post2Date: string;
+    post2Excerpt: string;
+    post3Title: string;
+    post3Date: string;
+    post3Excerpt: string;
+  };
+  portfolio: {
+    pageTitle: string;
+    pageSubtitle: string;
+  };
+  footer: {
+    contactTitle: string;
+    contactDesc: string;
+    contactDescLink1: string;
+    contactDescLink2: string;
+    company: string;
+    home: string;
+    about: string;
+    services: string;
+    projects: string;
+    contact: string;
+    privacy: string;
+    terms: string;
+    resources: string;
+    blogDesign: string;
+    designCourses: string;
+    fullDesign: string;
+    renders3d: string;
+    consultancy: string;
+    sitemapXml: string;
+  };
+  overlay: {
+    brandSubtitle: string;
+    location: string;
+    ctaText: string;
+    ctaButton: string;
+  };
+  messenger: {
+    toggleLabel: string;
+    callLabel: string;
+    whatsappLabel: string;
+    viberLabel: string;
+    telegramLabel: string;
+  };
+}
