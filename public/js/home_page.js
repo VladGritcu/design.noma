@@ -30,6 +30,7 @@
     constructor() {
       this.header = document.querySelector('.noma-header');
       this.burgerBtn = document.getElementById('burger-btn');
+      this.closeBtn = document.getElementById('overlay-close-btn');
       this.overlay = document.getElementById('nav-overlay');
       this.innerPanel = this.overlay?.querySelector('.nav-overlay-inner');
       this.navLinks = this.overlay?.querySelectorAll('.overlay-nav .nav-link');
@@ -62,6 +63,11 @@
         } else {
           this.open();
         }
+      });
+
+      // Close button click
+      this.closeBtn?.addEventListener('click', () => {
+        this.close();
       });
 
       // Nav link clicks

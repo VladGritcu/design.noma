@@ -249,14 +249,33 @@
       }
     }
 
-    simulateApiCall(formData) {
-      // Simulate network delay
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log('Form data:', Object.fromEntries(formData));
-          resolve();
-        }, 1500);
-      });
+    async simulateApiCall(formData) {
+      try {
+        const supabaseUrl = 'https://lxxxqwacwkmawkryxxzd.supabase.co';
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4eHhxd2Fjd2ttYXdrcnl4eHpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgzMDgsImV4cCI6MjA4OTkxNDMwOH0.iGK01G9U3HjFPZaG_MMcIB9-mld5Ri5IRRbSRB8EpmY';
+
+        const response = await fetch(
+          `${supabaseUrl}/functions/v1/contact-form-submit`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${anonKey}`,
+              'Content-Type': 'application/octet-stream',
+            },
+            body: formData
+          }
+        );
+
+        if (!response.ok) {
+          console.error('Form submission failed:', response.status);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Form submitted successfully:', result);
+      } catch (error) {
+        console.error('Email sending error:', error);
+      }
     }
 
     showToast(isError = false, message = '') {
