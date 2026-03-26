@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import nodemailer from "npm:nodemailer";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,13 +18,21 @@ async function sendEmailViaGmail(
   formData: ContactFormData,
   attachmentCount: number
 ): Promise<void> {
-  const gmailApiKey = Deno.env.get("GMAIL_API_KEY");
-  const senderEmail = Deno.env.get("SENDER_EMAIL") || "hello@noma.studio";
-  const recipientEmail = Deno.env.get("RECIPIENT_EMAIL") || "hello@noma.studio";
+  const appPassword = Deno.env.get("GMAIL_API_KEY");
+  const senderEmail = Deno.env.get("SENDER_EMAIL") || "gritcuvlad1@gmail.com";
+  const recipientEmail = Deno.env.get("RECIPIENT_EMAIL") || "gritcuvlad1@gmail.com";
 
-  if (!gmailApiKey) {
-    throw new Error("Gmail API key not configured");
+  if (!appPassword) {
+    throw new Error("GMAIL_API_KEY not configured");
   }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: senderEmail,
+      pass: appPassword,
+    },
+  });
 
   const emailBody = `
 Mesaj nou de la NOMA Contact Form
@@ -38,52 +47,27 @@ ${formData.message}
 Fișiere atașate: ${attachmentCount} imagine(i)
 
 ---
-Acest email a fost trimis de la formularului de contact de pe nomastudio.ro
+Acest email a fost trimis de la formularul de contact de pe nomastudio.ro
 `;
 
-  const mailPayload = {
+  await transporter.sendMail({
+    from: senderEmail,
     to: recipientEmail,
     subject: `Nou Contact Form Submission - ${formData.name}`,
     text: emailBody,
-    from: senderEmail,
-  };
-
-  const response = await fetch("https://www.googleapis.com/gmail/v1/users/me/messages/send", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${gmailApiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      raw: Buffer.from(JSON.stringify(mailPayload)).toString("base64"),
-    }),
   });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Gmail API error: ${error}`);
-  }
 }
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   try {
     if (req.method !== "POST") {
       return new Response(
         JSON.stringify({ error: "Method not allowed" }),
-        {
-          status: 405,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-          },
-        }
+        { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -97,25 +81,14 @@ Deno.serve(async (req: Request) => {
     if (!name || !email || !phone || !message) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-          },
-        }
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const inspirationPhotos = formData.getAll("inspiration_photos");
     const attachmentCount = inspirationPhotos.length;
 
-    const contactData: ContactFormData = {
-      name,
-      email,
-      phone,
-      message,
-    };
+    const contactData: ContactFormData = { name, email, phone, message };
 
     try {
       await sendEmailViaGmail(contactData, attachmentCount);
@@ -127,35 +100,18 @@ Deno.serve(async (req: Request) => {
       JSON.stringify({
         success: true,
         message: "Mesajul a fost trimis cu succes",
-        data: {
-          name,
-          email,
-          attachments: attachmentCount,
-        },
+        data: { name, email, attachments: attachmentCount },
       }),
-      {
-        status: 200,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Form submission error:", error);
-
     return new Response(
       JSON.stringify({
         error: "A apărut o eroare la procesarea formularului",
         details: error instanceof Error ? error.message : "Unknown error",
       }),
-      {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
