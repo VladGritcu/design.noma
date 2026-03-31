@@ -5,6 +5,7 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { LanguageProvider } from './i18n/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -76,7 +77,6 @@ function AppContent() {
     return () => cleanupRef.current?.();
   }, [initAnimations]);
 
-  // Preîncarcă paginile principale după 2s
   useEffect(() => {
     const preloads = [
       () => import('./pages/Servicii'),
@@ -117,11 +117,13 @@ function AppContent() {
 
 function App() {
   return (
-    <LanguageProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </LanguageProvider>
+    <HelmetProvider>
+      <LanguageProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </LanguageProvider>
+    </HelmetProvider>
   );
 }
 
