@@ -363,6 +363,16 @@ body,
     width: 30px;
     height: 2px;
   }
+
+  /* Remove blur from slide-out on mobile — extremely expensive on iOS Safari */
+  .hps-slide--out {
+    animation: hps-out-mobile 1.2s ease forwards;
+  }
+}
+
+@keyframes hps-out-mobile {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 

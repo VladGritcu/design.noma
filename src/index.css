@@ -16,6 +16,11 @@
   --noma-muted: #5a4a3b;
   --noma-gold: #b8956a;
   --noma-separator: rgba(110, 91, 74, .22);
+  
+  /* Smooth easing tokens */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *,
@@ -29,9 +34,10 @@
 
 html {
   scroll-behavior: smooth;
-  /* fix scroll jerky pe iOS */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Prevent layout shifts from scrollbar */
+  scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -56,9 +62,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-  /* scroll fluid pe iOS Safari */
   -webkit-overflow-scrolling: touch;
-  /* elimină delay tap pe mobil */
   touch-action: manipulation;
 }
 
@@ -88,14 +92,12 @@ button {
   cursor: pointer;
   border: none;
   outline: none;
-  /* elimină delay 300ms pe mobil */
   touch-action: manipulation;
 }
 
 a {
   text-decoration: none;
   color: inherit;
-  /* elimină delay 300ms pe mobil */
   touch-action: manipulation;
 }
 
@@ -103,6 +105,22 @@ a {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* ── SMOOTH PAGE TRANSITIONS ── */
+main {
+  animation: pageEnter 0.6s var(--ease-out-expo) both;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── FADE-IN global — doar pentru elemente NON-card ── */
@@ -204,6 +222,39 @@ button:focus:not(:focus-visible) {
   );
 }
 
+/* ── GPU Compositing Hints for Smooth Animations ── */
+.noma-header,
+.nav-overlay,
+.nav-overlay-inner,
+.noma-contact-widget {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Smooth active states for all interactive elements ── */
+@media (hover: hover) and (pointer: fine) {
+  a,
+  button {
+    transition: opacity 0.15s ease;
+  }
+  
+  a:active,
+  button:active {
+    opacity: 0.92;
+  }
+}
+
+/* ── Touch device: instant tap feedback ── */
+@media (hover: none) {
+  a:active,
+  button:active {
+    opacity: 0.85;
+    transition: opacity 0.05s ease;
+  }
+}
+
 /* ── MOBIL GLOBAL ────────────────────────────────────── */
 @media (max-width: 768px) {
   .container {
@@ -213,4 +264,29 @@ button:focus:not(:focus-visible) {
   h1 { font-size: clamp(26px, 7vw, 36px); }
   h2 { font-size: clamp(22px, 5.5vw, 30px); }
   h3 { font-size: clamp(18px, 4.5vw, 24px); }
+  
+  /* Preserve page transitions on mobile — smoother */
+  main {
+    animation-duration: 0.45s;
+  }
+
+  /* Force fade-in visibility to bypass JS on mobile for performance */
+  .fade-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    visibility: visible !important;
+    -webkit-transform: none !important;
+  }
+}
+
+/* ── Selection styling ── */
+::selection {
+  background: rgba(184, 149, 106, 0.25);
+  color: #2c2318;
+}
+
+::-moz-selection {
+  background: rgba(184, 149, 106, 0.25);
+  color: #2c2318;
 }

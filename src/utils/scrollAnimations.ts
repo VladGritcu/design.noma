@@ -2,25 +2,10 @@ export const initScrollAnimations = () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.innerWidth <= 768;
 
-  // Pe mobil dezactivăm animațiile complet — fluid instant
+  // Pe mobil dezactivăm animațiile de scroll — acum gestionat direct prin CSS (@media max-width 768px)
+  // pentru zero overhead JS pe Safari iPhone 13.
   if (prefersReducedMotion || isMobile) {
-    document.querySelectorAll('.fade-in').forEach((el) => {
-      el.classList.add('visible');
-    });
-
-    // MutationObserver pentru elemente adăugate după render
-    const mutationObserver = new MutationObserver(() => {
-      document.querySelectorAll('.fade-in:not(.visible)').forEach((el) => {
-        el.classList.add('visible');
-      });
-    });
-
-    mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    return () => mutationObserver.disconnect();
+    return () => {};
   }
 
   // ── Desktop: animații normale ──────────────────────────

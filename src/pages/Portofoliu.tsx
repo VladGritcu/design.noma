@@ -9,6 +9,7 @@ const Portofoliu = () => {
   const location = useLocation();
   const { t } = useLanguage();
 
+  // Scroll into view logic for hashes
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace('#project-', '');
@@ -21,37 +22,74 @@ const Portofoliu = () => {
     }
   }, [location]);
 
+  // IntersectionObserver for Staggered Reveal Animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            // Unobserve after trigger for constant state
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.noma-reveal, .blur-reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="portofoliu">
       <section className="portofoliu-hero">
         <div className="container">
-          <h1 className="page-title">{t.portfolio.pageTitle}</h1>
-          <p className="page-subtitle">{t.portfolio.pageSubtitle}</p>
+          <h1 className="page-title blur-reveal" style={{ '--delay': '0s' } as React.CSSProperties}>
+            {t.portfolio.pageTitle}
+          </h1>
+          
+          <div className="hero-separator blur-reveal" style={{ '--delay': '0.15s' } as React.CSSProperties}>
+            <div className="line-left"></div>
+            <div className="diamond"></div>
+            <div className="line-right"></div>
+          </div>
+
+          <p className="page-subtitle blur-reveal" style={{ '--delay': '0.3s' } as React.CSSProperties}>
+            {t.portfolio.pageSubtitle}
+          </p>
         </div>
       </section>
 
       <section className="projects-section">
         <div className="container">
           <div className="projects-grid">
-            {projects.map((project) => (
+            {projects.map((project, index) => (
               <div
                 key={project.id}
                 id={`project-${project.id}`}
-                className="project-card fade-in"
+                className="project-card noma-reveal"
+                style={{ '--delay': `${Math.min(index * 0.15, 0.6)}s` } as React.CSSProperties} /* Cap delay to 0.6s max */
               >
                 <div className="project-slider">
                   <ImageSlider images={project.images} />
                 </div>
 
                 <div className="project-info">
-                  <span className="project-tag">{project.tag}</span>
-                  <h3 className="project-name">{project.name}</h3>
-                  <p className="project-description">{project.description}</p>
+                  <div className="project-header">
+                    <h3 className="project-name">{project.name}</h3>
+                    <span className="project-tag">{project.tag}</span>
+                  </div>
+                  
                   <div className="project-meta">
                     <span>{project.location}</span>
-                    <span>•</span>
+                    <span className="meta-dot"></span>
                     <span>{project.year}</span>
                   </div>
+
+                  <p className="project-description">{project.description}</p>
                 </div>
               </div>
             ))}

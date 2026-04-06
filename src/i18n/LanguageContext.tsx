@@ -11,7 +11,7 @@ const SUPPORTED: Language[] = ['ro', 'ru', 'en'];
 interface LanguageContextValue {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: Translations;
+  t: ((key: string) => string) & Translations;
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
@@ -53,10 +53,29 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = language;
   }, [language]);
 
+  /** Resolves nested keys like 'contact.pageTitle' from translation objects */
+  const t = useCallback(((key: string): string => {
+    const parts = key.split('.');
+    let current: any = translations[language];
+
+    for (const part of parts) {
+      if (current && typeof current === 'object' && part in current) {
+        current = current[part];
+      } else {
+        return key; // Fallback to key string if path is invalid
+      }
+    }
+
+    return typeof current === 'string' ? current : key;
+  }) as ((key: string) => string) & Translations, [language]);
+
+  // Merge the object properties into the function
+  Object.assign(t, translations[language]);
+
   const value: LanguageContextValue = {
     language,
     setLanguage,
-    t: translations[language],
+    t,
   };
 
   return (

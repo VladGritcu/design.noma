@@ -94,6 +94,8 @@ export interface Translations {
   };
   contact: {
     pageTitle: string;
+    eyebrow: string;
+    subtitle: string;
     nameLabel: string;
     namePlaceholder: string;
     emailLabel: string;
@@ -102,15 +104,34 @@ export interface Translations {
     phonePlaceholder: string;
     messageLabel: string;
     messagePlaceholder: string;
+    uploadTitle: string;
+    uploadSub: string;
+    progressLabel: string;
     submitDesktop: string;
     submitMobile: string;
     successMessage: string;
     visitUs: string;
+    visitLabel: string;
     visitAddress: string;
     callUs: string;
+    callLabel: string;
     callInfo: string;
     writeUs: string;
+    writeLabel: string;
     writeInfo: string;
+    nameError: string;
+    emailError: string;
+    phoneError: string;
+    messageError: string;
+    maxFilesError: string;
+    successTitle: string;
+    successDesc: string;
+    errorTitle: string;
+    errorDesc: string;
+    submitting: string;
+    sending: string;
+    sent: string;
+    removeFile: string;
   };
   courses: {
     pageTitle: string;

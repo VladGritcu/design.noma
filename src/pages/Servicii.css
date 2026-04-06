@@ -2,143 +2,114 @@
    HERO
 ========================================================= */
 
+.servicii {
+  background-color: #fdf9f3;
+  min-height: 100vh;
+}
+
 .servicii-hero {
-  background-color: var(--noma-page-bg, #f5f1eb);
-  padding: 120px 0 40px;
+  background-color: #fdf9f3;
+  padding: 80px 0 48px;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.servicii-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(185, 154, 100, 0.07) 0%, transparent 70%);
-  pointer-events: none;
-}
+/* Removed radial gradient as per user request for one consistent shade */
 
 .hero-eyebrow {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--noma-gold, #b8956a);
-  margin-bottom: 12px;
-  opacity: 0;
-  animation: fadeSlideUp 0.5s ease forwards 0.1s;
+  color: var(--noma-gold, #b08d3e);
+  margin-bottom: 20px;
 }
 
 .page-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 4.5vw, 52px);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 6vw, 64px);
   font-weight: 400;
-  color: var(--color-dark, #2a2118);
-  letter-spacing: -0.5px;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
   line-height: 1.1;
-  margin-bottom: 14px;
-  opacity: 0;
-  animation: fadeSlideUp 0.5s ease forwards 0.2s;
+  margin-bottom: 24px;
 }
 
 .hero-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  opacity: 0;
-  animation: fadeSlideUp 0.5s ease forwards 0.3s;
+  gap: 15px;
+  margin-bottom: 24px;
 }
 
 .divider-line {
   display: block;
-  width: 235px;
+  width: 140px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--noma-gold, #b8956a), transparent);
+  background: linear-gradient(90deg, transparent, rgba(176, 141, 62, 0.5), transparent);
 }
 
 .divider-diamond {
   display: block;
-  width: 5px;
-  height: 5px;
-  background: var(--noma-gold, #b8956a);
+  width: 6px;
+  height: 6px;
+  background: #b08d3e;
   transform: rotate(45deg);
   flex-shrink: 0;
 }
 
 .page-subtitle {
-  font-size: clamp(13px, 1.4vw, 15px);
-  color: var(--color-medium, #5a4a3b);
-  max-width: 460px;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: #4a4a4a;
+  max-width: 520px;
   margin: 0 auto;
-  line-height: 1.65;
+  line-height: 1.6;
   font-weight: 300;
-  letter-spacing: 0.2px;
-  opacity: 0;
-  animation: fadeSlideUp 0.5s ease forwards 0.4s;
-}
-
-/* =========================================================
-   KEYFRAMES
-========================================================= */
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 14px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+  letter-spacing: 0.012em;
 }
 
 /* =========================================================
    PRICING SECTION
-========================================================= */
+ ========================================================= */
 
 .pricing-section {
-  padding: 56px 0 64px;
-  background-color: var(--noma-page-bg, #f5f1eb);
+  padding: 40px 0 88px;
+  background-color: #fdf9f3;
 }
 
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 32px;
   align-items: stretch;
 }
 
-.pricing-grid .fade-in:nth-child(1) { animation-delay: 0.05s; }
-.pricing-grid .fade-in:nth-child(2) { animation-delay: 0.15s; }
-.pricing-grid .fade-in:nth-child(3) { animation-delay: 0.25s; }
-
 /* =========================================================
    CARD
-========================================================= */
+ ========================================================= */
 
 .pricing-card {
   background: #ffffff;
-  padding: 28px 24px;
-  border-radius: 8px;
-  border: 1px solid rgba(201, 178, 156, 0.18);
+  padding: 48px 32px;
+  border-radius: 12px;
+  border: 1px solid rgba(176, 141, 62, 0.12);
   position: relative;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   overflow: visible;
-  /* tranziții specifice — fără box-shadow în will-change */
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.5s ease,
-              opacity 0.5s ease;
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+              box-shadow 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+              border-color 0.4s ease;
+  will-change: transform, box-shadow;
+  /* Premium stability */
+  -webkit-font-smoothing: antialiased;
 }
 
-/* linie aurie sus */
+/* linie aurie sus - subtila */
 .pricing-card::after {
   content: '';
   position: absolute;
@@ -146,10 +117,10 @@
   left: 50%;
   transform: translateX(-50%) scaleX(0);
   transform-origin: center;
-  width: 60%;
+  width: 40%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--noma-gold, #b8956a), transparent);
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+  background: linear-gradient(90deg, transparent, #b08d3e, transparent);
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease;
   opacity: 0;
 }
 
@@ -167,12 +138,12 @@
   pointer-events: none;
 }
 
+/* Card Zoom & Approach Effect - Cinematic & Weighted */
 .pricing-card:hover {
-  transform: translate3d(0, -10px, 0) scale(1.015);
-  border-color: rgba(185, 154, 100, 0.45);
+  border-color: rgba(176, 141, 62, 0.55);
   box-shadow:
-    0 12px 24px rgba(185, 154, 100, 0.1),
-    0 32px 48px rgba(0, 0, 0, 0.07);
+    0 30px 60px -15px rgba(0, 0, 0, 0.1),
+    0 15px 30px -10px rgba(176, 141, 62, 0.15);
 }
 
 .pricing-card:hover::after {
@@ -189,25 +160,22 @@
 ========================================================= */
 
 .pricing-card.featured {
-  border: 1.5px solid rgba(185, 154, 100, 0.55);
-  background-color: #fffdf9;
-  box-shadow:
-    0 4px 12px rgba(185, 154, 100, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.05);
-  padding-top: 40px;
-}
-
-.pricing-card.featured::after {
-  transform: translateX(-50%) scaleX(0.5);
-  opacity: 0.35;
+  border: 1.5px solid rgba(176, 141, 62, 0.4);
+  background-color: #fff;
+  padding-top: 56px;
+  box-shadow: 0 10px 30px rgba(176, 141, 62, 0.05);
 }
 
 .pricing-card.featured:hover {
-  transform: translate3d(0, -10px, 0) scale(1.015);
-  border-color: rgba(185, 154, 100, 0.75);
+  border-color: rgba(176, 141, 62, 1);
   box-shadow:
-    0 16px 32px rgba(185, 154, 100, 0.13),
-    0 40px 64px rgba(0, 0, 0, 0.07);
+    0 45px 90px -20px rgba(0, 0, 0, 0.12),
+    0 20px 40px -12px rgba(176, 141, 62, 0.22);
+}
+
+.pricing-card.featured::after {
+  opacity: 0.4;
+  transform: translateX(-50%) scaleX(0.6);
 }
 
 .pricing-card.featured:hover::after {
@@ -234,32 +202,23 @@
 }
 
 .pricing-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
   font-weight: 500;
-  color: var(--color-dark, #2a2118);
-  margin-bottom: 4px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
   text-align: center;
-  letter-spacing: 0.5px;
-  transition: color 0.4s ease;
-}
-
-.pricing-card:hover .pricing-title {
-  color: #110b06;
+  letter-spacing: 0.02em;
 }
 
 .pricing-price {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--noma-gold, #b8956a);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 600;
+  color: #b08d3e;
   text-align: center;
-  margin: 10px 0 4px;
-  transition: text-shadow 0.4s ease;
-}
-
-.pricing-card:hover .pricing-price {
-  text-shadow: 0 0 20px rgba(185, 154, 100, 0.3);
+  margin: 12px 0 6px;
+  line-height: 1;
 }
 
 /* =========================================================
@@ -268,27 +227,27 @@
 
 .popular-badge {
   position: absolute;
-  top: -13px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #b8956a, #8a6a45);
+  background: #b08d3e;
   color: #ffffff;
-  padding: 6px 22px;
+  padding: 8px 28px;
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  border-radius: 20px;
+  border-radius: 40px;
   white-space: nowrap;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(185, 154, 100, 0.35);
-  transition: box-shadow 0.4s ease;
+  box-shadow: 0 4px 15px rgba(176, 141, 62, 0.3);
+  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .pricing-card.featured:hover .popular-badge {
-  box-shadow:
-    0 4px 16px rgba(185, 154, 100, 0.55),
-    0 0 28px rgba(185, 154, 100, 0.28);
+  transform: translateX(-50%) translateY(-10px) scale(1.05);
+  background: #c5a35e;
+  box-shadow: 0 10px 25px rgba(176, 141, 62, 0.5);
 }
 
 /* =========================================================
@@ -373,25 +332,8 @@
 }
 
 .pricing-card:has(.pricing-cta:focus-visible) {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--noma-gold, #b8956a);
   outline-offset: 2px;
-}
-
-/* =========================================================
-   FADE-IN cu IntersectionObserver
-========================================================= */
-
-.pricing-card.fade-in {
-  opacity: 0;
-  transform: translate3d(0, 14px, 0);
-  transition: opacity 0.5s ease,
-              transform 0.5s ease,
-              border-color 0.5s ease;
-}
-
-.pricing-card.fade-in.visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
 }
 
 /* =========================================================
@@ -401,17 +343,9 @@
 @media (max-width: 1024px) {
   .pricing-grid {
     grid-template-columns: 1fr;
-    max-width: 460px;
+    max-width: 440px;
     margin: 0 auto;
-    gap: 32px;
-  }
-
-  .pricing-card:hover {
-    transform: translate3d(0, -6px, 0) scale(1.01);
-  }
-
-  .pricing-card.featured:hover {
-    transform: translate3d(0, -6px, 0) scale(1.01);
+    gap: 40px;
   }
 }
 
@@ -421,7 +355,7 @@
 
 @media (max-width: 768px) {
   .servicii-hero {
-    padding: 90px 0 32px;
+    padding: 68px 0 32px;
   }
 
   .page-title {
@@ -435,7 +369,7 @@
   }
 
   .divider-line {
-    width: 140px;
+    width: 220px;
   }
 
   .pricing-section {
@@ -449,53 +383,13 @@
   }
 
   .pricing-card {
-    padding: 22px 18px;
-    /* dezactivează toate efectele grele pe mobil */
-    will-change: auto;
-    transform: none;
-    transition: border-color 0.3s ease, opacity 0.3s ease;
+    padding: 32px 24px;
+    will-change: transform;
+    transition: transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .pricing-card.featured {
     padding-top: 36px;
-  }
-
-  /* dezactivează complet hover pe touch */
-  .pricing-card:hover,
-  .pricing-card.featured:hover {
-    transform: none !important;
-    box-shadow: none !important;
-    border-color: rgba(201, 178, 156, 0.18) !important;
-  }
-
-  .pricing-card.featured:hover {
-    border-color: rgba(185, 154, 100, 0.55) !important;
-    box-shadow:
-      0 4px 12px rgba(185, 154, 100, 0.08),
-      0 16px 32px rgba(0, 0, 0, 0.05) !important;
-  }
-
-  .pricing-card:hover::after,
-  .pricing-card:hover::before {
-    opacity: 0 !important;
-    transform: translateX(-50%) scaleX(0) !important;
-  }
-
-  .pricing-card:hover .feature-item svg {
-    filter: none !important;
-  }
-
-  .pricing-card:hover .pricing-title {
-    color: var(--color-dark, #2a2118) !important;
-  }
-
-  .pricing-card:hover .pricing-price {
-    text-shadow: none !important;
-  }
-
-  .pricing-card.fade-in {
-    transition: opacity 0.3s ease !important;
-    transform: none !important;
   }
 
   .pricing-title {
@@ -523,6 +417,30 @@
   }
 }
 
+/* Guard hover effects to mouse-only devices */
+@media (hover: none) {
+  .pricing-card:hover,
+  .pricing-card.featured:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: rgba(201, 178, 156, 0.18) !important;
+  }
+  .pricing-card.featured:hover {
+    border-color: rgba(185, 154, 100, 0.55) !important;
+    box-shadow:
+      0 4px 12px rgba(185, 154, 100, 0.08),
+      0 16px 32px rgba(0, 0, 0, 0.05) !important;
+  }
+  .pricing-card:hover::after,
+  .pricing-card:hover::before {
+    opacity: 0 !important;
+    transform: translateX(-50%) scaleX(0) !important;
+  }
+  .pricing-card:hover .feature-item svg { filter: none !important; }
+  .pricing-card:hover .pricing-title { color: var(--color-dark, #2a2118) !important; }
+  .pricing-card:hover .pricing-price { text-shadow: none !important; }
+}
+
 /* =========================================================
    MOBIL MIC
 ========================================================= */
@@ -543,5 +461,18 @@
   .feature-item {
     font-size: 13px;
     gap: 8px;
+  }
+}
+
+/* =========================================================
+   ACCESIBILITATE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-card,
+  .pricing-card::before,
+  .pricing-card::after {
+    transition: none !important;
+    animation: none !important;
   }
 }

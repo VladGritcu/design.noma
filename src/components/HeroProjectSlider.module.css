@@ -1,68 +1,73 @@
-/* =========================================================
-   HPS — HeroProjectSlider (High Performance module)
-   Stack: React + TS + CSS Modules
-========================================================= */
+/* ═══════════════════════════════════════════════════════════════
+   HPS — HeroProjectSlider (Total Architecture Cleanup)
+   NOMA Studio Luxury Visual System — 2026.04.05
+═══════════════════════════════════════════════════════════════ */
 
+/* ── 1. GLOBAL LAYOUT ── */
 .root {
   position: relative;
   width: calc(100% - 48px);
   max-width: 1200px;
   margin: 84px auto 0;
-  aspect-ratio: 16 / 6;
+  aspect-ratio: 16 / 6.5;
   min-height: 300px;
-  max-height: 520px;
-  overflow: hidden;
-  background: #1a1410;
+  max-height: 540px;
+  background: #f8f1e9;
   border-radius: 20px;
-  
-  /* Performance: Isolate reflow/repaint */
-  contain: layout style paint;
-  /* Performance: Hardware acceleration */
-  transform: translateZ(0);
-
+  overflow: visible; /* Bleed glow for progress bar */
+  z-index: 5;
   box-shadow:
     0 0 0 1px rgba(184, 149, 106, 0.45),
-    0 0 0 3px rgba(184, 149, 106, 0.08),
-    0 0 18px rgba(184, 149, 106, 0.18),
-    inset 0 1px 0 rgba(226, 201, 160, 0.55),
     0 12px 40px rgba(0,0,0,.22);
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  transform: translateZ(0);
 }
 
 .stage {
   position: absolute;
   inset: 0;
-  background: #1a1410;
+  background: #f8f1e9;
 }
 
+/* ── 2. SLIDE CYCLE ── */
 .slide {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  /* iOS Safari layering */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
-  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1;
+  transform: translate3d(0, 0, 0); 
+  transition: opacity 1500ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.slidePrev {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
 }
 
 .slideActive {
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
   z-index: 2;
-  /* Hint for GPU - removed after transition via JS for efficiency */
-  will-change: opacity;
+  pointer-events: auto;
 }
 
+/* ── 3. KEN BURNS (IMAGE ZOOM) ── */
 .imgLink {
   display: block;
   width: 100%;
   height: 100%;
-  text-decoration: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .img {
@@ -70,170 +75,232 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transform: scale(1.02) translate3d(0,0,0);
+  will-change: transform;
 }
 
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(26,20,16,0.35) 0%, transparent 55%),
-              linear-gradient(to bottom, transparent 25%, rgba(26,20,16,0.72) 100%);
-  pointer-events: none;
-  z-index: 3;
+.slideActive .img {
+  animation: hps-ken-burns 8000ms cubic-bezier(0.2, 0.4, 0.3, 1) forwards;
 }
 
+@keyframes hps-ken-burns {
+  0%   { transform: scale(1.02) translate3d(0,0,0); }
+  100% { transform: scale(1.18) translate3d(0,0,0); }
+}
+
+/* ── 4. DRAMATIC CAPTION REVEAL (120px) ── */
 .caption {
   position: absolute;
-  bottom: clamp(52px, 8vh, 90px);
-  left: clamp(20px, 5vw, 72px);
+  bottom: clamp(60px, 10vh, 100px);
+  left: clamp(24px, 5vw, 84px);
   z-index: 10;
   pointer-events: none;
-  max-width: min(560px, 80vw);
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
 }
 
 .captionVisible {
-  opacity: 1;
-  transform: translateY(0);
+  animation: hps-caption-desktop 1800ms cubic-bezier(0.16, 1, 0.3, 1) 800ms forwards;
+}
+
+@keyframes hps-caption-desktop {
+  0% { 
+    opacity: 0; 
+    transform: translateY(120px) translate3d(0,0,0); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) translate3d(0,0,0); 
+  }
+}
+
+@keyframes hps-caption-mobile {
+  0% { 
+    opacity: 0; 
+    transform: translateY(80px) translate3d(0,0,0); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) translate3d(0,0,0); 
+  }
 }
 
 .title {
   margin: 0;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+  font-size: clamp(2rem, 4vw, 3.2rem);
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1.05;
   color: #f8f1e9;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 6px 24px rgba(0,0,0,0.35);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-.arrows {
-  display: contents;
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 60%),
+              linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 3;
 }
+
+/* ── 5. NAVIGATION (ARROWS & DOTS) ── */
+.arrows { display: contents; }
 
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 15;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(26,20,16,0.22);
-  border: 1px solid rgba(248,241,233,0.22);
+  background: rgba(26,20,16,0.2);
+  border: 1px solid rgba(248,241,233,0.15);
   border-radius: 50%;
-  color: rgba(248,241,233,0.75);
+  color: #f8f1e9;
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: background 0.3s, color 0.3s, scale 0.3s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  backdrop-filter: blur(8px);
+  transition: background 0.4s, transform 0.4s;
 }
 
 .arrow:hover {
-  background: rgba(184,149,106,0.38);
-  color: #f8f1e9;
-  scale: 1.08;
+  background: rgba(184,149,106,0.35);
+  transform: translateY(-50%) scale(1.1);
 }
 
-.arrowLeft { left: clamp(14px, 2vw, 32px); }
-.arrowRight { right: clamp(14px, 2vw, 32px); }
+.arrowLeft { left: 40px; }
+.arrowRight { right: 40px; }
 
+.dots {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 15;
+}
+
+.dot {
+  width: 14px;
+  height: 2px;
+  background: rgba(248, 241, 233, 0.4);
+  cursor: pointer;
+  border: none;
+  transition: width 0.4s, background 0.4s;
+}
+
+.dotActive {
+  width: 32px;
+  background: #e2c9a0;
+}
+
+/* ── 6. PROGRESS BAR ── */
 .progressBar {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: rgba(248,241,233,0.12);
+  background: rgba(140, 120, 85, 0.1);
   z-index: 20;
 }
 
 .progressFill {
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, #b8956a, #e2c9a0);
-  border-radius: 0 2px 2px 0;
-  /* NO TRANSITION - driven by RAF */
-  transition: none;
-}
-
-.dots {
-  position: absolute;
-  bottom: clamp(12px, 2.5vh, 22px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 6px;
-  z-index: 15;
-}
-
-.dot {
-  width: 16px;
-  height: 2px;
-  border-radius: 2px;
-  background: rgba(248, 241, 233, 0.28);
-  cursor: pointer;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
-  padding: 0;
-  border: none;
-  opacity: 0.6;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.dotActive {
-  width: 36px;
-  background: #b8956a;
-  opacity: 1;
-}
-
-/* Skeleton / Loading */
-.skeleton {
-  position: absolute;
-  inset: 0;
-  background: #1a1410;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.shimmer {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #1a1410 25%, #2a2420 50%, #1a1410 75%);
+  position: relative;
+  background: linear-gradient(90deg, #c4a24a, #f5e8b0, #c4a24a);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: hps-shimmer 3s linear infinite;
+  box-shadow: 0 0 12px rgba(184, 149, 106, 0.5);
+  will-change: width;
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.progressFill::before {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f5e8b0;
+  box-shadow: 0 0 10px #f5e8b0, 0 0 20px rgba(184, 149, 106, 0.6);
 }
 
-/* Mobile Adjustments */
+@keyframes hps-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ── 7. RESPONSIVE OVERRIDES ── */
+
+@media (max-width: 1440px) {
+  .progressBar { height: 2px; }
+  .progressFill::before { width: 5px; height: 5px; }
+}
+
 @media (max-width: 768px) {
   .root {
     width: calc(100% - 24px);
-    margin: 72px auto 0;
+    margin: 64px auto 0;
     aspect-ratio: 4 / 3;
-    height: auto;
-    min-height: 260px;
-    max-height: 440px;
     border-radius: 14px;
-    padding-bottom: env(safe-area-inset-bottom);
+    height: auto;
+    max-height: none;
+  }
+
+  /* Disable expensive Ken Burns on mobile Safari */
+  .slideActive .img {
+    animation: none;
+    transform: scale(1.05) translate3d(0,0,0);
   }
 
   .arrow { display: none; }
+
+  .caption {
+    bottom: 48px;
+    left: 20px;
+  }
+
+  .captionVisible {
+    animation: hps-caption-mobile 1500ms cubic-bezier(0.16, 1, 0.3, 1) 600ms forwards;
+  }
+
+  .title {
+    font-size: clamp(1.4rem, 6vw, 2.4rem);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  .progressBar {
+    height: 2px;
+    bottom: 0;
+  }
+
+  .progressFill::before {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .root {
+    width: calc(100% - 16px);
+    border-radius: 12px;
+  }
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .slide, .caption {
+  .img, .caption, .slide {
+    animation: none !important;
     transition: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
   }
 }

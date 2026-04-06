@@ -1,30 +1,9 @@
 /* ============================================================
-   MESSENGER WIDGET NOMA – floating contact
-   Telefon · WhatsApp · Viber · Telegram
-   ============================================================
-
-   Table of contents
-   0. CSS custom properties (light + dark)
-   1. Root widget
-   2. Toggle button
-   3. Pulse ring
-   4. Contact menu (nav)
-   5. Channel circles (icons)
-   6. Tooltips
-   7. Open-state mutations
-   8. Pop-in stagger animation
-   9. Click-burst
-  10. Attention animation
-  11. Focus styles
-  12. Touch / tap cleanup
-  13. Reduced-motion overrides
-  14. iOS safe area
-  15. Small-screen tweaks
+   MESSENGER WIDGET NOMA – v3
+   GPU-accelerat, Safari iOS fluid, -webkit- complet
    ============================================================ */
 
-/* ──────────────────────────────────────────────────────────
-   0. CSS custom properties
-   ────────────────────────────────────────────────────────── */
+/* ── 0. CUSTOM PROPERTIES ── */
 :root {
   --noma-toggle-size: 60px;
   --noma-circle-size: 60px;
@@ -47,39 +26,31 @@
   --noma-ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
   --noma-ease-out:    cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* tooltip */
-  --noma-tooltip-bg:   rgba(30, 30, 30, .86);
+  --noma-tooltip-bg:   rgba(20, 20, 20, .86);
   --noma-tooltip-text: #fff;
 }
 
-/* dark-mode palette swap (optional) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --noma-toggle-shadow: 0 10px 30px rgba(0, 0, 0, .45);
-    --noma-shadow-sm:     0 8px 20px rgba(0, 0, 0, .30);
-    --noma-shadow-md:     0 14px 32px rgba(0, 0, 0, .40);
-    --noma-shadow-lg:     0 20px 46px rgba(0, 0, 0, .55);
-    --noma-tooltip-bg:    rgba(10, 10, 10, .92);
+    --noma-shadow-sm:  0 8px 20px rgba(0, 0, 0, .30);
+    --noma-shadow-md:  0 14px 32px rgba(0, 0, 0, .40);
+    --noma-shadow-lg:  0 20px 46px rgba(0, 0, 0, .55);
+    --noma-tooltip-bg: rgba(10, 10, 10, .92);
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-   1. Root widget
-   ────────────────────────────────────────────────────────── */
+/* ── 1. ROOT WIDGET ── */
 .noma-contact-widget {
   position: fixed;
   bottom: 28px;
   left: 24px;
   z-index: 10000;
-  font-family: 'Poppins', sans-serif;
-  /* iOS safe area */
+  font-family: 'Poppins', system-ui, sans-serif;
   bottom: calc(28px + env(safe-area-inset-bottom, 0px));
   left:   calc(24px + env(safe-area-inset-left,   0px));
 }
 
-/* ──────────────────────────────────────────────────────────
-   2. Toggle button
-   ────────────────────────────────────────────────────────── */
+/* ── 2. TOGGLE BUTTON ── */
 .noma-contact-toggle {
   width:  var(--noma-toggle-size);
   height: var(--noma-toggle-size);
@@ -93,62 +64,120 @@
   background: linear-gradient(135deg, var(--noma-accent-1), var(--noma-accent-2));
   color: #fff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .18);
+
+  /* GPU composite layer — Safari iOS CRITIC */
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   will-change: transform;
-  transition:
-    transform   .28s var(--noma-ease-spring),
-    box-shadow  .28s ease-out;
+
+  -webkit-transition:
+    -webkit-transform .28s var(--noma-ease-spring),
+    box-shadow        .28s ease-out;
+          transition:
+            transform  .28s var(--noma-ease-spring),
+            box-shadow .28s ease-out;
+
   -webkit-tap-highlight-color: transparent;
-  contain: layout style; /* GPU layer */
+  touch-action: manipulation;
+  outline: none;
+  contain: layout style;
 }
 
-.noma-contact-toggle i {
+/* iconiță – wrapper care se rotește */
+.noma-toggle-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  -webkit-transform: rotate(0deg) translateZ(0);
+          transform: rotate(0deg) translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transition: -webkit-transform .42s var(--noma-ease-spring);
+          transition:           transform .42s var(--noma-ease-spring);
+}
+
+.noma-contact-widget.noma-open .noma-toggle-icon-wrap {
+  -webkit-transform: rotate(180deg) translateZ(0);
+          transform: rotate(180deg) translateZ(0);
+}
+
+.noma-toggle-icon-wrap i {
+  display: block;
   font-size: 1.6rem;
-  transition: transform .32s var(--noma-ease-spring);
+  line-height: 1;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  /* scale individual pentru efect pop pe X */
+  -webkit-transition: -webkit-transform .32s var(--noma-ease-spring);
+          transition:           transform .32s var(--noma-ease-spring);
 }
 
-.noma-x-rotate {
-  transform: rotate(-180deg);
+/* X-ul se mărește puțin când apare */
+.noma-contact-widget.noma-open .noma-toggle-icon-wrap i {
+  -webkit-transform: scale(1.1) translateZ(0);
+          transform: scale(1.1) translateZ(0);
 }
 
-/* hover (pointer device only) */
+/* hover – numai pointer device */
 @media (hover: hover) and (pointer: fine) {
   .noma-contact-toggle:hover {
-    transform: translateY(-4px) scale(1.06);
+    -webkit-transform: translateY(-4px) scale(1.06) translateZ(0);
+            transform: translateY(-4px) scale(1.06) translateZ(0);
     box-shadow: var(--noma-shadow-md);
   }
 
-  /* suppress hover when open */
   .noma-contact-widget.noma-open .noma-contact-toggle:hover {
-    transform: translateY(-3px) scale(1.08) rotate(-10deg);
+    -webkit-transform: translateY(-3px) scale(1.08) rotate(-10deg) translateZ(0);
+            transform: translateY(-3px) scale(1.08) rotate(-10deg) translateZ(0);
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-   3. Pulse ring
-   ────────────────────────────────────────────────────────── */
+/* open state */
+.noma-contact-widget.noma-open .noma-contact-toggle {
+  -webkit-transform: translateY(-3px) scale(1.08) rotate(-10deg) translateZ(0);
+          transform: translateY(-3px) scale(1.08) rotate(-10deg) translateZ(0);
+  box-shadow: var(--noma-shadow-lg);
+}
+
+/* ── 3. PULSE RING ── */
 .noma-pulse-ring {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   border: 2px solid rgba(255, 255, 255, .55);
-  animation: noma-pulse 2.4s ease-out infinite;
   pointer-events: none;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-animation: noma-pulse 2.4s ease-out infinite;
+          animation: noma-pulse 2.4s ease-out infinite;
 }
 
-/* Hide when open */
 .noma-contact-widget.noma-open .noma-pulse-ring {
-  animation: none;
+  -webkit-animation: none;
+          animation: none;
   opacity: 0;
 }
 
+@-webkit-keyframes noma-pulse {
+  0%   { -webkit-transform: scale(.9)  translateZ(0); opacity: 1; }
+  100% { -webkit-transform: scale(1.5) translateZ(0); opacity: 0; }
+}
 @keyframes noma-pulse {
-  0%   { transform: scale(.9);  opacity: 1;   }
-  100% { transform: scale(1.5); opacity: 0;   }
+  0%   { transform: scale(.9)  translateZ(0); opacity: 1; }
+  100% { transform: scale(1.5) translateZ(0); opacity: 0; }
 }
 
-/* ──────────────────────────────────────────────────────────
-   4. Contact menu
-   ────────────────────────────────────────────────────────── */
+/* ── 4. CONTACT MENU ── */
 .noma-contact-menu {
   position: absolute;
   bottom: calc(var(--noma-toggle-size) + 10px);
@@ -156,26 +185,32 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-  transform: translateY(10px);
-  transition:
-    opacity    .22s var(--noma-ease-out),
-    transform  .22s var(--noma-ease-out),
-    visibility .22s;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transform: translateY(10px) translateZ(0);
+          transform: translateY(10px) translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transition:
+    opacity           .22s var(--noma-ease-out),
+    -webkit-transform .22s var(--noma-ease-out),
+    visibility        .22s;
+          transition:
+            opacity   .22s var(--noma-ease-out),
+            transform .22s var(--noma-ease-out),
+            visibility .22s;
 }
 
 .noma-contact-widget.noma-open .noma-contact-menu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0);
+  -webkit-transform: translateY(0) translateZ(0);
+          transform: translateY(0) translateZ(0);
 }
 
-/* ──────────────────────────────────────────────────────────
-   5. Channel circles
-   ────────────────────────────────────────────────────────── */
+/* ── 5. CHANNEL CIRCLES ── */
 .noma-menu-circle {
   width:  var(--noma-circle-size);
   height: var(--noma-circle-size);
@@ -186,55 +221,69 @@
   text-decoration: none;
   color: #fff;
   box-shadow: var(--noma-shadow-sm);
-  /* initial state for pop-in */
-  transform: translateX(-8px) translateY(8px) scale(.8);
+  position: relative;
+
+  /* GPU layer de la bun inceput */
+  -webkit-transform: translateX(-8px) translateY(8px) scale(.8) translateZ(0);
+          transform: translateX(-8px) translateY(8px) scale(.8) translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   opacity: 0;
-  transition:
-    transform   .26s var(--noma-ease-spring),
-    box-shadow  .26s ease-out,
-    filter      .26s ease-out,
-    opacity     .20s ease-out;
+
+  -webkit-transition:
+    -webkit-transform .26s var(--noma-ease-spring),
+    box-shadow        .26s ease-out,
+    opacity           .20s ease-out;
+          transition:
+            transform  .26s var(--noma-ease-spring),
+            box-shadow .26s ease-out,
+            opacity    .20s ease-out;
+
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  outline: none;
 }
 
-/* hover (desktop) */
 @media (hover: hover) and (pointer: fine) {
   .noma-menu-circle:hover {
-    transform: translateX(6px) translateY(-4px) scale(1.08);
+    -webkit-transform: translateX(6px) translateY(-4px) scale(1.08) translateZ(0);
+            transform: translateX(6px) translateY(-4px) scale(1.08) translateZ(0);
     box-shadow: var(--noma-shadow-md);
     filter: brightness(1.08) saturate(1.05);
   }
-
   .noma-menu-circle:hover i {
-    transform: translateY(-2px);
+    -webkit-transform: translateY(-2px) translateZ(0);
+            transform: translateY(-2px) translateZ(0);
   }
 }
 
 .noma-menu-circle i {
+  display: block;
   font-size: 1.6rem;
-  transition: transform .26s var(--noma-ease-spring);
+  line-height: 1;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transition: -webkit-transform .26s var(--noma-ease-spring);
+          transition:           transform .26s var(--noma-ease-spring);
 }
-.noma-phone i { font-size: 1.3rem; }
 
-/* Colour themes */
+.noma-phone i    { font-size: 1.3rem; }
+
 .noma-phone    { background: var(--noma-phone-bg);    }
 .noma-whatsapp { background: var(--noma-wa-bg);       }
 .noma-viber    { background: var(--noma-viber-bg);    }
 .noma-telegram { background: var(--noma-telegram-bg); }
 
-/* ──────────────────────────────────────────────────────────
-   6. Tooltips
-   ────────────────────────────────────────────────────────── */
-.noma-menu-circle {
-  position: relative;
-}
-
+/* ── 6. TOOLTIPS ── */
 .noma-menu-circle::before {
   content: attr(data-tooltip);
   position: absolute;
   left: calc(100% + 12px);
   top: 50%;
-  transform: translateY(-50%) scaleX(.85);
+  -webkit-transform: translateY(-50%) scaleX(.85) translateZ(0);
+          transform: translateY(-50%) scaleX(.85) translateZ(0);
   transform-origin: left center;
   background: var(--noma-tooltip-bg);
   color: var(--noma-tooltip-text);
@@ -246,9 +295,8 @@
   border-radius: 6px;
   pointer-events: none;
   opacity: 0;
-  transition:
-    opacity   .18s ease,
-    transform .18s ease;
+  -webkit-transition: opacity .18s ease, -webkit-transform .18s ease;
+          transition: opacity .18s ease,           transform .18s ease;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -256,15 +304,14 @@
 @media (hover: hover) and (pointer: fine) {
   .noma-menu-circle:hover::before {
     opacity: 1;
-    transform: translateY(-50%) scaleX(1);
+    -webkit-transform: translateY(-50%) scaleX(1) translateZ(0);
+            transform: translateY(-50%) scaleX(1) translateZ(0);
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-   7. Open-state mutations
-   ────────────────────────────────────────────────────────── */
+.is-touch .noma-menu-circle::before { display: none; }
 
-/* glow behind the button */
+/* ── 7. OPEN-STATE GLOW ── */
 .noma-contact-widget.noma-open::before {
   content: "";
   position: absolute;
@@ -277,74 +324,94 @@
   );
   filter: blur(8px);
   opacity: 0;
-  animation: noma-glow-in .45s ease-out forwards;
   pointer-events: none;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-animation: noma-glow-in .45s ease-out forwards;
+          animation: noma-glow-in .45s ease-out forwards;
 }
 
+@-webkit-keyframes noma-glow-in {
+  0%   { opacity: 0;  -webkit-transform: scale(.8)    translateZ(0); }
+  60%  { opacity: 1;  -webkit-transform: scale(1.05)  translateZ(0); }
+  100% { opacity: .9; -webkit-transform: scale(1)     translateZ(0); }
+}
 @keyframes noma-glow-in {
-  0%   { opacity: 0; transform: scale(.8); }
-  60%  { opacity: 1; transform: scale(1.05); }
-  100% { opacity: .9; transform: scale(1); }
+  0%   { opacity: 0;  transform: scale(.8)   translateZ(0); }
+  60%  { opacity: 1;  transform: scale(1.05) translateZ(0); }
+  100% { opacity: .9; transform: scale(1)    translateZ(0); }
 }
 
-/* button tilts open */
-.noma-contact-widget.noma-open .noma-contact-toggle {
-  transform: translateY(-3px) scale(1.08) rotate(-10deg);
-  box-shadow: var(--noma-shadow-lg);
+/* ── 8. POP-IN STAGGER ── */
+.noma-contact-widget.noma-open .noma-menu-circle {
+  -webkit-animation: noma-pop-in .38s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+          animation: noma-pop-in .38s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
-/* ──────────────────────────────────────────────────────────
-   8. Pop-in stagger animation
-   ────────────────────────────────────────────────────────── */
-.noma-menu-circle.noma-pop-in {
-  animation: noma-pop-in .38s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  animation-delay: var(--noma-delay, 0ms);
-}
+.noma-contact-widget.noma-open .noma-menu-circle:nth-child(1) { -webkit-animation-delay: 0ms;   animation-delay: 0ms;   }
+.noma-contact-widget.noma-open .noma-menu-circle:nth-child(2) { -webkit-animation-delay: 70ms;  animation-delay: 70ms;  }
+.noma-contact-widget.noma-open .noma-menu-circle:nth-child(3) { -webkit-animation-delay: 140ms; animation-delay: 140ms; }
+.noma-contact-widget.noma-open .noma-menu-circle:nth-child(4) { -webkit-animation-delay: 210ms; animation-delay: 210ms; }
 
-@keyframes noma-pop-in {
+@-webkit-keyframes noma-pop-in {
   0% {
-    transform: translateX(-10px) translateY(12px) scale(.7);
+    -webkit-transform: translateX(-10px) translateY(12px) scale(.7) translateZ(0);
     opacity: 0;
   }
   60% {
-    transform: translateX(2px) translateY(-4px) scale(1.05);
+    -webkit-transform: translateX(2px) translateY(-4px) scale(1.05) translateZ(0);
     opacity: 1;
   }
   100% {
-    transform: translateX(0) translateY(0) scale(1);
+    -webkit-transform: translateX(0) translateY(0) scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+@keyframes noma-pop-in {
+  0% {
+    transform: translateX(-10px) translateY(12px) scale(.7) translateZ(0);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(2px) translateY(-4px) scale(1.05) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(0) scale(1) translateZ(0);
     opacity: 1;
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-   9. Click-burst
-   ────────────────────────────────────────────────────────── */
+/* ── 9. CLICK BURST ── */
 .noma-contact-toggle.noma-click-burst::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, .75) 0,
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(255, 255, 255, .75) 0, transparent 70%);
   opacity: 0;
-  animation: noma-burst .45s ease-out forwards;
   pointer-events: none;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-animation: noma-burst .45s ease-out forwards;
+          animation: noma-burst .45s ease-out forwards;
 }
 
+@-webkit-keyframes noma-burst {
+  0%   { -webkit-transform: scale(.6)  translateZ(0); opacity: .9; }
+  70%  { -webkit-transform: scale(1.4) translateZ(0); opacity: .4; }
+  100% { -webkit-transform: scale(1.8) translateZ(0); opacity: 0;  }
+}
 @keyframes noma-burst {
-  0%   { transform: scale(.6);  opacity: .9; }
-  70%  { transform: scale(1.4); opacity: .4; }
-  100% { transform: scale(1.8); opacity: 0;  }
+  0%   { transform: scale(.6)  translateZ(0); opacity: .9; }
+  70%  { transform: scale(1.4) translateZ(0); opacity: .4; }
+  100% { transform: scale(1.8) translateZ(0); opacity: 0;  }
 }
 
-/* ──────────────────────────────────────────────────────────
-  10. Attention animation
-   ────────────────────────────────────────────────────────── */
+/* ── 10. ATTENTION ── */
 .noma-contact-toggle.noma-attention {
-  animation: noma-attention-bounce .75s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  -webkit-animation: noma-attention-bounce .75s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+          animation: noma-attention-bounce .75s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 .noma-contact-toggle.noma-attention::before {
@@ -355,38 +422,51 @@
   background: rgba(111, 180, 140, .55);
   z-index: -1;
   pointer-events: none;
-  animation: noma-attention-ring .9s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-animation: noma-attention-ring .9s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+          animation: noma-attention-ring .9s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
 }
 
+@-webkit-keyframes noma-attention-ring {
+  0%   { -webkit-transform: scale(1)    translateZ(0); opacity: .65; }
+  70%  { -webkit-transform: scale(1.65) translateZ(0); opacity: 0;   }
+  100% { -webkit-transform: scale(1.65) translateZ(0); opacity: 0;   }
+}
 @keyframes noma-attention-ring {
-  0%   { transform: scale(1);   opacity: .65; }
-  70%  { transform: scale(1.65); opacity: 0;  }
-  100% { transform: scale(1.65); opacity: 0;  }
+  0%   { transform: scale(1)    translateZ(0); opacity: .65; }
+  70%  { transform: scale(1.65) translateZ(0); opacity: 0;   }
+  100% { transform: scale(1.65) translateZ(0); opacity: 0;   }
 }
 
+@-webkit-keyframes noma-attention-bounce {
+  0%   { -webkit-transform: scale(1)    translateZ(0); }
+  18%  { -webkit-transform: scale(1.18) translateZ(0); }
+  32%  { -webkit-transform: scale(0.93) translateZ(0); }
+  46%  { -webkit-transform: scale(1.10) translateZ(0); }
+  60%  { -webkit-transform: scale(0.97) translateZ(0); }
+  74%  { -webkit-transform: scale(1.04) translateZ(0); }
+  88%  { -webkit-transform: scale(0.99) translateZ(0); }
+  100% { -webkit-transform: scale(1)    translateZ(0); }
+}
 @keyframes noma-attention-bounce {
-  0%   { transform: scale(1);     }
-  18%  { transform: scale(1.18);  }
-  32%  { transform: scale(0.93);  }
-  46%  { transform: scale(1.10);  }
-  60%  { transform: scale(0.97);  }
-  74%  { transform: scale(1.04);  }
-  88%  { transform: scale(0.99);  }
-  100% { transform: scale(1);     }
+  0%   { transform: scale(1)    translateZ(0); }
+  18%  { transform: scale(1.18) translateZ(0); }
+  32%  { transform: scale(0.93) translateZ(0); }
+  46%  { transform: scale(1.10) translateZ(0); }
+  60%  { transform: scale(0.97) translateZ(0); }
+  74%  { transform: scale(1.04) translateZ(0); }
+  88%  { transform: scale(0.99) translateZ(0); }
+  100% { transform: scale(1)    translateZ(0); }
 }
 
-/* ──────────────────────────────────────────────────────────
-  11. Focus styles
-   ────────────────────────────────────────────────────────── */
-.noma-contact-toggle:focus { outline: none; }
-
+/* ── 11. FOCUS ── */
+.noma-contact-toggle:focus  { outline: none; }
 .noma-contact-toggle:focus-visible {
   outline: none;
   box-shadow: var(--noma-shadow-focus);
 }
-
 .noma-menu-circle:focus { outline: none; }
-
 .noma-menu-circle:focus-visible {
   outline: none;
   box-shadow:
@@ -394,64 +474,33 @@
     0 0 0 5px rgba(111, 180, 140, .55);
 }
 
-/* ──────────────────────────────────────────────────────────
-  12. Touch / tap cleanup  (Android hover-sticky fix)
-   ────────────────────────────────────────────────────────── */
-.is-touch .noma-menu-circle::before {
-  display: none; /* no tooltips on touch */
-}
+/* ── 12. TOUCH CLEANUP ── */
+.is-touch .noma-menu-circle::before { display: none; }
 
 @media (max-width: 768px) {
   .noma-contact-toggle:focus,
-  .noma-menu-circle:focus {
-    outline: none;
-  }
+  .noma-menu-circle:focus { outline: none; }
 }
 
-/* ──────────────────────────────────────────────────────────
-  13. Reduced-motion overrides
-   ────────────────────────────────────────────────────────── */
+/* ── 13. REDUCED MOTION ── */
 @media (prefers-reduced-motion: reduce) {
-  .noma-pulse-ring,
-  .noma-menu-circle.noma-pop-in,
-  .noma-contact-toggle.noma-click-burst::after,
-  .noma-contact-toggle.noma-attention,
-  .noma-contact-toggle.noma-attention::before,
-  .noma-contact-widget.noma-open::before {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* restore after press so circles are visible */
-  .noma-contact-widget.noma-open .noma-menu-circle {
-    transform: translateX(0) translateY(0) scale(1);
-    opacity: 1;
+  .noma-pulse-ring        { -webkit-animation: none; animation: none; opacity: .4; }
+  .noma-menu-circle.noma-pop-in { -webkit-animation: none; animation: none;
+    -webkit-transform: translateZ(0); transform: translateZ(0); opacity: 1; }
+  .noma-toggle-icon-wrap  {
+    -webkit-transition: none; transition: none;
   }
 }
 
-/* ──────────────────────────────────────────────────────────
-  14. iOS safe area  (already in root; repeated for clarity)
-   ────────────────────────────────────────────────────────── */
-
-/* ──────────────────────────────────────────────────────────
-  15. Small-screen tweaks
-   ────────────────────────────────────────────────────────── */
+/* ── 15. SMALL SCREEN ── */
 @media (max-width: 768px) {
   :root {
     --noma-toggle-size: 54px;
     --noma-circle-size: 54px;
   }
 
-  .noma-contact-toggle i,
-  .noma-menu-circle i {
-    font-size: 1.5rem;
-  }
-
-  .noma-phone i {
-    font-size: 1.2rem;
-  }
-
-  .noma-contact-menu {
-    gap: 8px;
-  }
+  .noma-toggle-icon-wrap i,
+  .noma-menu-circle i { font-size: 1.5rem; }
+  .noma-phone i       { font-size: 1.2rem; }
+  .noma-contact-menu  { gap: 8px; }
 }

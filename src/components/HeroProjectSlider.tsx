@@ -16,6 +16,7 @@ const HeroProjectSlider = ({
   autoplay = true 
 }: HeroProjectSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   
@@ -27,22 +28,23 @@ const HeroProjectSlider = ({
   const rafIdRef = useRef<number>(0);
   const pausedRef = useRef<boolean>(false);
   const savedProgressRef = useRef<number>(0);
-  const slowModeRef = useRef<boolean>(false);
-  const gapCounterRef = useRef<number>(0);
-  const lastFrameTimeRef = useRef<number>(0);
   const isFocusedRef = useRef<boolean>(false);
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
+  const touchStartTime = useRef<number>(0);
 
   const slides = useMemo(() => projects, [projects]);
 
-  // Preload Logic
+  // Preload Logic - Staggered for mobile performance
   useEffect(() => {
-    let loadedCount = 0;
+    const isMobile = window.innerWidth <= 768;
+    
     slides.forEach((project, i) => {
+      // On mobile, only preload first 2 immediately. Load others after delay or on demand.
+      if (isMobile && i > 1) return;
+
       const src = project.images[0];
       const img = new Image();
-      // iOS Safari / High Performance hints
       img.fetchPriority = i === 0 ? 'high' : 'low';
       
       img.onload = () => {
@@ -51,29 +53,49 @@ const HeroProjectSlider = ({
           next.add(src);
           return next;
         });
-        loadedCount++;
         if (i === 0) setIsReady(true);
       };
       img.src = src;
     });
+
+    // Strategy: Load remaining images after a 2sec delay to not block the initial FCP
+    if (isMobile && slides.length > 2) {
+      const timer = setTimeout(() => {
+        slides.slice(2).forEach(project => {
+          const src = project.images[0];
+          if (loadedImages.has(src)) return;
+          const img = new Image();
+          img.src = src;
+        });
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
   }, [slides]);
 
-  // Utility to check Battery/Data Saver
+  // Intersection Observer to stop the RAF loop when slider is out of view
+  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, { threshold: 0.05 });
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // Check constraints — prioritized user "wow" experience over strict data-saving
   const checkConstraints = useCallback(() => {
-    if (typeof navigator !== 'undefined') {
-      // @ts-ignore - experimental API
-      if (navigator.connection?.saveData) return false;
-    }
-    // Respect reduced motion
+    // If user specifically requested reduced motion in system settings, we honor it
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-    return autoplay;
+    return autoplay; 
   }, [autoplay]);
 
   const advanceSlide = useCallback(() => {
     setCurrentIndex(prev => (prev + 1) % slides.length);
   }, [slides.length]);
 
-  const resetTimer = useCallback((newStartTime = performance.now()) => {
+  const resetTimer = useCallback((newStartTime = Date.now()) => {
     startTimeRef.current = newStartTime;
     savedProgressRef.current = 0;
     if (progressBarRef.current) {
@@ -81,33 +103,14 @@ const HeroProjectSlider = ({
     }
   }, []);
 
-  const tick = useCallback((now: number) => {
-    // 1. Slow Device Detection (first 10 frames or sampling)
-    if (lastFrameTimeRef.current > 0) {
-      const gap = now - lastFrameTimeRef.current;
-      if (gap > 100) {
-        gapCounterRef.current++;
-        if (gapCounterRef.current >= 3) {
-          slowModeRef.current = true;
-        }
-      } else {
-        gapCounterRef.current = 0;
-      }
-    }
-    lastFrameTimeRef.current = now;
-
-    if (pausedRef.current) {
+  const tick = useCallback(() => {
+    if (pausedRef.current || !isVisible) {
       rafIdRef.current = requestAnimationFrame(tick);
       return;
     }
 
+    const now = Date.now();
     const elapsed = now - startTimeRef.current;
-    // Cap delta for background tab return
-    const delta = Math.min(elapsed, 50); 
-    
-    // We compute the actual progress by how much time has passed since START
-    // but we use savedProgress if we resumed from a pause.
-    // simpler: progress = (elapsed / duration)
     const progress = Math.min(elapsed / duration, 1);
 
     if (progressBarRef.current) {
@@ -115,6 +118,7 @@ const HeroProjectSlider = ({
     }
 
     if (progress >= 1) {
+      setPrevIndex(currentIndex); // Set current as the background for the next transition
       advanceSlide();
       resetTimer(now);
     }
@@ -122,21 +126,56 @@ const HeroProjectSlider = ({
     rafIdRef.current = requestAnimationFrame(tick);
   }, [duration, advanceSlide, resetTimer]);
 
-  // Control Functions
+  // RESET TIMER with Date.now()
+  useEffect(() => {
+    const start = () => {
+      startTimeRef.current = Date.now();
+      rafIdRef.current = requestAnimationFrame(tick);
+    };
+
+    // SAFETY FALLBACK for real mobile hardware (Low Power Mode/Throttling)
+    // If requestAnimationFrame is paused by the system, this interval ensures slides still change
+    const safetyInterval = setInterval(() => {
+      if (pausedRef.current) return;
+      const now = Date.now();
+      const elapsed = now - startTimeRef.current;
+      if (elapsed >= duration + 100) { // +100ms grace period
+        advanceSlide();
+        resetTimer(now);
+      }
+    }, 200);
+
+    if (isReady && autoplay) start();
+
+    return () => {
+      cancelAnimationFrame(rafIdRef.current);
+      clearInterval(safetyInterval);
+    };
+  }, [isReady, autoplay, tick, advanceSlide, resetTimer, duration]);
+
   const pause = useCallback(() => {
+    if (!window.matchMedia('(hover: hover)').matches) return;
     if (pausedRef.current) return;
     pausedRef.current = true;
-    const now = performance.now();
-    const elapsed = now - startTimeRef.current;
-    savedProgressRef.current = Math.min(elapsed / duration, 1);
+    savedProgressRef.current = (Date.now() - startTimeRef.current) / duration;
   }, [duration]);
 
   const resume = useCallback(() => {
     if (!pausedRef.current) return;
     pausedRef.current = false;
-    // Recalculate startTime to pick up where we left off
-    startTimeRef.current = performance.now() - (savedProgressRef.current * duration);
+    startTimeRef.current = Date.now() - (savedProgressRef.current * duration);
   }, [duration]);
+
+  // Handle Tab visibility & automatic resume on mobile scroll-away
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) pause();
+      else resume();
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [pause, resume]);
 
   const goTo = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -156,13 +195,9 @@ const HeroProjectSlider = ({
   // Main Loop Lifecycle
   useEffect(() => {
     if (!isReady || !checkConstraints()) return;
-
     startTimeRef.current = performance.now();
     rafIdRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafIdRef.current);
-    };
+    return () => { cancelAnimationFrame(rafIdRef.current); };
   }, [isReady, tick, checkConstraints]);
 
   // Visibility & Focus
@@ -171,23 +206,20 @@ const HeroProjectSlider = ({
       if (document.hidden) pause();
       else resume();
     };
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isFocusedRef.current) return;
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
     };
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('keydown', handleKeyDown);
-    
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [pause, resume, next, prev]);
 
-  // Touch Handlers (Passive)
+  // Touch Handlers — velocity-based swipe for smoother mobile feel
   useEffect(() => {
     const container = document.getElementById('hps-container');
     if (!container) return;
@@ -195,6 +227,7 @@ const HeroProjectSlider = ({
     const handleTouchStart = (e: TouchEvent) => {
       touchStartX.current = e.touches[0].clientX;
       touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
       pause();
     };
 
@@ -203,14 +236,18 @@ const HeroProjectSlider = ({
       const touchEndY = e.changedTouches[0].clientY;
       const dx = touchEndX - touchStartX.current;
       const dy = touchEndY - touchStartY.current;
+      const dt = Date.now() - touchStartTime.current;
+      const velocity = Math.abs(dx) / Math.max(dt, 1);
 
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      // Velocity-based: fast swipes need less distance
+      const threshold = velocity > 0.5 ? 25 : 50;
+
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
         if (dx < 0) next();
         else prev();
       }
       
-      // Delay resume slightly for smoother feel
-      setTimeout(resume, 300);
+      setTimeout(resume, 250);
     };
 
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -235,6 +272,7 @@ const HeroProjectSlider = ({
   return (
     <section 
       id="hps-container"
+      ref={containerRef}
       className={s.root}
       role="region" 
       aria-label="Proiecte slider"
@@ -244,43 +282,47 @@ const HeroProjectSlider = ({
       onBlur={() => { isFocusedRef.current = false; }}
       tabIndex={0}
     >
-      <div className={s.stage} aria-live="polite" aria-atomic="true">
-        {slides.map((slide, i) => {
-          const isActive = i === currentIndex;
-          const isLoaded = loadedImages.has(slide.images[0]);
-          
-          return (
-            <div 
-              key={slide.id || i}
-              className={`${s.slide} ${isActive ? s.slideActive : ''}`}
-              aria-hidden={!isActive}
-              onTransitionEnd={(e) => {
-                // Release GPU layer after transition
-                (e.currentTarget as HTMLDivElement).style.willChange = 'auto';
-              }}
-            >
-              {isLoaded && (
-                <Link 
-                  to={`/portofoliu#project-${slide.id}`} 
-                  className={s.imgLink}
-                  aria-label={`${t.hero.viewProject} ${slide.name}`}
-                >
-                  <img 
-                    src={slide.images[0]} 
-                    alt={slide.name}
-                    className={s.img}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    // fetchPriority only works on native img tags in some browsers
-                    // but we can set it here via spread or just hope for the best
-                    {...({ fetchpriority: i === 0 ? 'high' : 'low' } as any)}
-                  />
-                </Link>
-              )}
-              
-              <div className={s.overlay} />
-              
-              <div className={`${s.caption} ${isActive ? s.captionVisible : ''}`}>
-                <h2 className={s.title}>{slide.name}</h2>
+      <div className={s.mask}>
+        <div className={s.stage} aria-live="polite" aria-atomic="true">
+          {slides.map((slide, i) => {
+            const isActive = i === currentIndex;
+            const isPrev = i === prevIndex;
+            
+            // Only render current and previous to save mobile memory
+            if (!isActive && !isPrev) return null;
+
+            const isLoaded = loadedImages.has(slide.images[0]);
+            
+            return (
+              <div 
+                key={slide.id || i}
+                className={`
+                  ${s.slide} 
+                  ${isActive ? s.slideActive : ''} 
+                  ${isPrev ? s.slidePrev : ''}
+                `}
+                aria-hidden={!isActive}
+              >
+                {isLoaded && (
+                  <Link 
+                    to={`/portofoliu#project-${slide.id}`} 
+                    className={s.imgLink}
+                    aria-label={`${t.hero.viewProject} ${slide.name}`}
+                  >
+                    <img 
+                      src={slide.images[0]} 
+                      alt={slide.name}
+                      className={s.img}
+                      loading={isActive ? "eager" : "lazy"}
+                      {...({ fetchpriority: isActive ? 'high' : 'low' } as any)}
+                    />
+                  </Link>
+                )}
+                
+                <div className={s.overlay} aria-hidden="true" />
+                
+                <div className={`${s.caption} ${isActive ? s.captionVisible : ''}`}>
+                  <h2 className={s.title}>{slide.name}</h2>
               </div>
             </div>
           );
@@ -310,7 +352,7 @@ const HeroProjectSlider = ({
         </button>
       </div>
 
-      {autoplay && !slowModeRef.current && (
+      {autoplay && (
         <div className={s.progressBar} aria-hidden="true">
           <div ref={progressBarRef} className={s.progressFill} />
         </div>
@@ -328,6 +370,7 @@ const HeroProjectSlider = ({
           />
         ))}
       </nav>
+      </div>
     </section>
   );
 };

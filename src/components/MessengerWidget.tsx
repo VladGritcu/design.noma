@@ -60,47 +60,60 @@ const MessengerWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   /* refs */
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const menuRef   = useRef<HTMLDivElement>(null);
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const circleRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const toggleRef   = useRef<HTMLButtonElement>(null);
+  const menuRef     = useRef<HTMLDivElement>(null);
+  const widgetRef   = useRef<HTMLDivElement>(null);
+  const circleRefs  = useRef<(HTMLAnchorElement | null)[]>([]);
 
   /* attention timing */
-  const attentionStoppedRef = useRef(false);
-  const attentionTimerRef   = useRef<ReturnType<typeof setTimeout>  | null>(null);
-  const attentionIntervalRef= useRef<ReturnType<typeof setInterval> | null>(null);
+  const attentionStoppedRef  = useRef(false);
+  const attentionTimerRef    = useRef<ReturnType<typeof setTimeout>  | null>(null);
+  const attentionIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* ── touch-device detection (Android hover sticky fix) ── */
+  /* ── GPU warm-up: force composite layers on mount ── */
   useEffect(() => {
-    const onTouch = () => {
-      document.body.classList.add('is-touch');
-    };
+    const nodes = [toggleRef.current, ...(circleRefs.current.filter(Boolean) as HTMLAnchorElement[])];
+    nodes.forEach(el => {
+      if (!el) return;
+      (el as HTMLElement).style.webkitTransform = 'translateZ(0)';
+      (el as HTMLElement).style.transform       = 'translateZ(0)';
+    });
+  }, []);
+
+  /* ── touch-device detection (Android hover-sticky fix) ── */
+  useEffect(() => {
+    const onTouch = () => document.body.classList.add('is-touch');
     document.addEventListener('touchstart', onTouch, { once: true, passive: true });
     return () => document.removeEventListener('touchstart', onTouch);
   }, []);
 
   /* ── attention animation ── */
   const triggerAttention = useCallback(() => {
-    if (attentionStoppedRef.current) return;
+    if (attentionStoppedRef.current || isOpen) return;
     const btn = toggleRef.current;
     if (!btn) return;
-    requestAnimationFrame(() => {
+    
+    btn.classList.add('noma-attention');
+    const onEnd = () => {
       btn.classList.remove('noma-attention');
-      void btn.offsetWidth; // force reflow
-      btn.classList.add('noma-attention');
-    });
-  }, []);
+      btn.removeEventListener('animationend', onEnd);
+    };
+    btn.addEventListener('animationend', onEnd);
+  }, [isOpen]);
 
   const stopAttention = useCallback(() => {
     attentionStoppedRef.current = true;
     if (attentionTimerRef.current)    clearTimeout(attentionTimerRef.current);
     if (attentionIntervalRef.current) clearInterval(attentionIntervalRef.current);
+    toggleRef.current?.classList.remove('noma-attention');
   }, []);
 
   useEffect(() => {
-    // reduce-motion: skip completely
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
+    if (isOpen) {
+      stopAttention();
+      return;
+    }
+    
     attentionTimerRef.current = setTimeout(() => {
       triggerAttention();
       attentionIntervalRef.current = setInterval(triggerAttention, 8000);
@@ -110,7 +123,7 @@ const MessengerWidget = () => {
       if (attentionTimerRef.current)    clearTimeout(attentionTimerRef.current);
       if (attentionIntervalRef.current) clearInterval(attentionIntervalRef.current);
     };
-  }, [triggerAttention]);
+  }, [triggerAttention, isOpen, stopAttention]);
 
   /* ── click outside ── */
   useEffect(() => {
@@ -120,37 +133,26 @@ const MessengerWidget = () => {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handler, { passive: true });
-    document.addEventListener('touchstart', handler, { passive: true });
-    return () => {
-      document.removeEventListener('mousedown', handler);
-      document.removeEventListener('touchstart', handler);
-    };
+    document.addEventListener('pointerdown', handler as EventListener, { passive: true });
+    return () => document.removeEventListener('pointerdown', handler as EventListener);
   }, [isOpen]);
 
-  /* ── Escape key ── */
+  /* ── Escape + Tab trap ── */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
         toggleRef.current?.focus();
       }
-      /* Tab focus trap inside menu */
       if (e.key === 'Tab' && isOpen) {
         const items = circleRefs.current.filter(Boolean) as HTMLAnchorElement[];
         if (!items.length) return;
         const first = items[0];
         const last  = items[items.length - 1];
         if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
         } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
+          if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
         }
       }
     };
@@ -158,54 +160,19 @@ const MessengerWidget = () => {
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen]);
 
-  /* ── pop-in stagger when menu opens ── */
+  /* ── tabindex când meniul e închis ── */
   useEffect(() => {
-    if (!isOpen) return;
-    circleRefs.current.forEach((el, i) => {
+    circleRefs.current.forEach(el => {
       if (!el) return;
-      el.style.setProperty('--noma-delay', `${i * 70}ms`);
-      el.classList.remove('noma-pop-in');
-      void el.offsetWidth; // force reflow
-      el.classList.add('noma-pop-in');
-      el.removeAttribute('tabindex');
-
-      const release = () => {
-        el.style.willChange = 'auto';
-        el.removeEventListener('animationend', release);
-      };
-      el.addEventListener('animationend', release);
+      isOpen ? el.removeAttribute('tabindex') : el.setAttribute('tabindex', '-1');
     });
   }, [isOpen]);
 
-  /* ── manage tabindex when closed ── */
-  useEffect(() => {
-    circleRefs.current.forEach((el) => {
-      if (!el) return;
-      if (isOpen) {
-        el.removeAttribute('tabindex');
-      } else {
-        el.setAttribute('tabindex', '-1');
-      }
-    });
-  }, [isOpen]);
-
-  /* ── click burst helper ── */
-  const fireBurst = useCallback(() => {
-    const btn = toggleRef.current;
-    if (!btn) return;
-    btn.classList.remove('noma-click-burst');
-    void btn.offsetWidth;
-    btn.classList.add('noma-click-burst');
-  }, []);
-
-  /* ── toggle handler ── */
+  /* ── toggle ── */
   const handleToggle = useCallback(() => {
     stopAttention();
-    requestAnimationFrame(() => {
-      setIsOpen(prev => !prev);
-      fireBurst();
-    });
-  }, [stopAttention, fireBurst]);
+    setIsOpen(prev => !prev);
+  }, [stopAttention]);
 
   /* ─────────────────── RENDER ─────────────────── */
   return (
@@ -227,12 +194,19 @@ const MessengerWidget = () => {
         aria-expanded={isOpen}
         onClick={handleToggle}
       >
-        <i
-          className={`fa-solid ${isOpen ? 'fa-xmark noma-x-rotate' : 'fa-comments'}`}
-          id="noma-toggle-icon"
-          aria-hidden="true"
-        />
-        {/* Pulse ring — always mounted, hidden in open state via CSS */}
+        {/*
+          Wrapper-ul se rotește 180° cu CSS (clasa noma-open pe widget),
+          iar iconița se schimbă instant în React.
+          Efectul: nourasul rotindu-se devine X — fluid, fără flickering.
+        */}
+        <span className="noma-toggle-icon-wrap" aria-hidden="true">
+          <i
+            className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-cloud'}`}
+            id="noma-toggle-icon"
+          />
+        </span>
+
+        {/* Pulse ring — montat mereu, ascuns în open state via CSS */}
         <span className="noma-pulse-ring" aria-hidden="true" />
       </button>
 

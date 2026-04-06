@@ -66,6 +66,7 @@ function ScrollToTop({ onRouteChange }: { onRouteChange: () => void }) {
 
 function AppContent() {
   const cleanupRef = useRef<(() => void) | null>(null);
+  const { pathname } = useLocation();
 
   const initAnimations = useCallback(() => {
     cleanupRef.current?.();
@@ -95,7 +96,7 @@ function AppContent() {
       <ScrollToTop onRouteChange={initAnimations} />
       <div className="app">
         <Navbar />
-        <main>
+        <main key={pathname}>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/"           element={<Home />} />

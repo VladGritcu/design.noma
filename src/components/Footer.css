@@ -2,7 +2,7 @@
    NOMA FOOTER 2026 — ULTRA LUXURY / RESPONSIVE
    ==================================================== */
 
-.site-footer{
+.site-footer {
   --noma-bg: #f5f1eb;
   --noma-ink: #4a3a2b;
   --noma-muted: #5a4a3b;
@@ -19,224 +19,242 @@
   box-shadow: 0 -10px 30px rgba(0,0,0,.045);
 }
 
-.footer-inner{
+.footer-inner {
   max-width: var(--container);
   margin: 0 auto;
   text-align: center;
 }
 
-
 /* ---------------- CONTACT ---------------- */
-.footer-contact{
+.footer-contact {
   max-width: 860px;
-  margin: 0 auto 1.2rem;
+  margin: 0 auto 1.4rem;
 }
-.footer-contact-title{
+
+.footer-contact-title {
   margin: 0 0 .4rem;
   font-size: clamp(1.05rem, 1.2vw, 1.2rem);
   font-weight: 600;
   color: #1a1a1a;
 }
-.footer-contact-desc{
+
+.footer-contact-desc {
   margin: 0 auto 1rem;
   max-width: 820px;
   font-size: .9rem;
   line-height: 1.65;
-  color: var(--noma-muted);
+  color: #4a3a2b;
+  font-weight: 400;
 }
-.footer-contact-desc a{
-  position: relative;
-  color: var(--noma-gold);
-  font-weight: 500;
-  text-decoration: none;
-  padding-bottom: 3px;
-  display: inline-block;
-  transition: color .25s ease;
-}
-.footer-contact-desc a::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  bottom:0;
-  width:0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--noma-gold), transparent);
-  transform: translateX(-50%);
-  transition: width .35s cubic-bezier(.22,1,.36,1);
-}
-.footer-contact-desc a:hover{ color: #8a6b43; }
-.footer-contact-desc a:hover::after{ width: 100%; }
 
-.contact-items{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
+/* ── CTA link inline consultanță ── */
+.footer-cta-link {
+  position: relative;
+  color: #a37c4e; /* Darker, more prominent gold */
+  font-weight: 700; /* Bold to make it highly evident inline */
+  text-decoration: none;
+  display: inline-block;
+  padding: 0 4px;
+  margin-left: 2px;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+/* Efectul de subliniere care creste din centru - design fin de agentie */
+.footer-cta-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #a37c4e,
+    transparent
+  );
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-cta-link:hover {
+  color: #8b4513; /* Sienna inchis elegant la hover */
+}
+
+.footer-cta-link:hover::after {
+  width: 100%;
+}
+
+.contact-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: .9rem;
 }
-.contact-item{
-  display:flex;
-  align-items:center;
+
+.contact-item {
+  display: flex;
+  align-items: center;
   gap: .55rem;
   padding: .55rem 1.15rem .55rem .65rem;
   border-radius: 999px;
   background: #d9b89b;
-  color:#fff;
-  text-decoration:none;
+  color: #fff;
+  text-decoration: none;
   font-size: .86rem;
-  box-shadow: 0 10px 26px rgba(184,149,106,.25);
-  transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s ease, opacity .22s ease;
+  box-shadow: 0 10px 26px rgba(184, 149, 106, .25);
+  transition: transform .22s cubic-bezier(.22, 1, .36, 1),
+              box-shadow .22s ease,
+              opacity .22s ease;
 }
-.contact-item:hover{
+
+.contact-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(184,149,106,.32);
+  box-shadow: 0 16px 36px rgba(184, 149, 106, .32);
   opacity: .98;
 }
 
-/* HOVER CU CERC LUMINAT PE ICONIȚA */
 .contact-item:hover .contact-icon {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), 0 0 14px rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65),
+              0 0 14px rgba(255, 255, 255, 0.55);
 }
 
-.contact-icon{
+.contact-icon {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255,255,255,.22);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow: 0 2px 7px rgba(0,0,0,.10);
+  background: rgba(255, 255, 255, .22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, .10);
   transition: box-shadow 0.2s ease;
+  flex-shrink: 0;
 }
-.contact-icon i{ font-size: .92rem; color:#fff; }
-.footer-contact a{ color:#fff; }
+
+.contact-icon i { font-size: .92rem; color: #fff; }
+.footer-contact a { color: #fff; }
 
 .contact-value {
   font-size: 0.88rem;
   font-weight: 500;
 }
 
-.footer-divider{
-  height: 1px;
-  max-width: 620px;
-  width: 100%;
-  margin: 1rem auto 1.1rem;
-  background: linear-gradient(90deg, transparent, rgba(110, 91, 74, 0.28), transparent);
-}
-
 /* ---------------- GRID LINKS ---------------- */
-.footer-links-grid{
+.footer-links-grid {
   width: 100%;
   max-width: var(--grid);
   margin: 0 auto;
   position: relative;
-  background-image: none;
 }
 
-.footer-section{
+.footer-section {
   position: relative;
 }
 
-/* titlurile: perfect centrate */
-.footer-toggle{
-  -webkit-appearance:none;
-  appearance:none;
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.45rem;
-  background:transparent;
-  border:0;
-  padding:.4rem 0;
+.footer-toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  background: transparent;
+  border: 0;
+  padding: .4rem 0;
   font-family: inherit;
-  text-transform:uppercase;
-  letter-spacing:.14em;
+  text-transform: uppercase;
+  letter-spacing: .14em;
   font-size: .78rem;
-  font-weight:600;
+  font-weight: 600;
   color: var(--noma-ink);
-  cursor:pointer;
+  cursor: pointer;
   text-align: center;
 }
-.footer-toggle-icon{
-  font-size:.85rem;
-  transition: transform .32s cubic-bezier(.22,1,.36,1);
+
+.footer-toggle-icon {
+  font-size: .85rem;
+  transition: transform .32s cubic-bezier(.22, 1, .36, 1);
 }
 
-/* LISTA + ACORDION – o singură definiție */
-.footer-links{
-  list-style:none;
-  margin: .25rem 0 .25rem;
+/* ── ACORDION ── */
+.footer-links {
+  list-style: none;
+  margin: 0;
   padding: 0;
-
   text-align: center;
-
   overflow: hidden;
-  height: 0;
+
+  max-height: 0;
   opacity: 0;
-  transform: translateY(0);
+  pointer-events: none;
+
   transition:
-    height .45s cubic-bezier(.22,1,.36,1),
-    opacity .32s ease,
-    transform .32s ease;
+    max-height 0.45s cubic-bezier(.22, 1, .36, 1),
+    opacity 0.3s ease;
 }
 
-/* container interior – centrat, cu un mic shift la stânga pe mobil */
-.footer-links-inner{
-  padding: .28rem 0 .28rem;
-}
-
-.footer-links li + li{ margin-top: .22rem; }
-.footer-links a{
-  color: var(--noma-ink);
-  text-decoration:none;
-  font-size:.9rem;
-  transition: color .2s ease;
-}
-.footer-links a:hover{ color: var(--noma-gold); }
-
-/* când secțiunea e deschisă */
-.footer-section.is-open .footer-links{
+.footer-section.is-open .footer-links {
+  max-height: 400px;
   opacity: 1;
-  transform: translateY(0);
+  pointer-events: auto;
+  margin: .25rem 0;
 }
 
-/* săgeata și accent pe titlu */
-.footer-section.is-open .footer-toggle-icon{
+.footer-section.is-open .footer-toggle-icon {
   transform: rotate(180deg);
 }
-.footer-section.is-open .footer-toggle{
+
+.footer-section.is-open .footer-toggle {
   color: #b8956a;
 }
 
+.footer-links li + li { margin-top: .22rem; }
+
+.footer-links a {
+  color: var(--noma-ink);
+  text-decoration: none;
+  font-size: .9rem;
+  transition: color .2s ease;
+}
+
+.footer-links a:hover { color: var(--noma-gold); }
+
 /* ---------------- SOCIAL ---------------- */
-.footer-social{
+.footer-social {
   margin-top: 1.3rem;
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: center;
   gap: .7rem;
 }
-.footer-social a{
+
+.footer-social a {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: #d9b89b;
-  color:#fff;
+  color: #fff;
   font-size: 1.12rem;
-  text-decoration:none;
-  box-shadow: 0 10px 24px rgba(184,149,106,.20);
-  transition: transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s ease;
-}
-.footer-social a:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), 0 0 14px rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(184, 149, 106, .20);
+  transition: transform .2s cubic-bezier(.22, 1, .36, 1),
+              box-shadow .2s ease;
 }
 
-.footer-copy{
-  margin: 1rem 0 0.5rem;
+.footer-social a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65),
+              0 0 14px rgba(255, 255, 255, 0.55);
+}
+
+/* ── COPYRIGHT ── */
+.footer-copy {
+  margin: 2.2rem 0 0.5rem;
   font-size: .84rem;
   color: #7a6755;
   text-align: center;
@@ -245,75 +263,122 @@
 .footer-copy::after {
   content: "";
   display: block;
-  margin: 0.8rem auto 0;
+  margin: 0.8rem auto 0.6rem;
   width: 160px;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(110, 91, 74, 0.45), transparent);
 }
 
 /* ======================================================
-   MOBILE ≤767px — 3 LINIUȚE IDENTICE, COMPACT
+   MOBILE ≤767px
    ===================================================== */
-@media (max-width: 767px){
+@media (max-width: 767px) {
 
-  .footer-links-grid{
-    max-width: none !important;
-    padding: 0 !important;
-    background-image: none !important;
-    position: relative !important;
+  .site-footer {
+    padding: 1.8rem 0 1.2rem;
   }
 
-  .footer-section{
-    padding: 0 !important;
+  .footer-inner {
+    padding: 0 1rem;
   }
 
-  /* linkurile: centrate pe rând, dar tot blocul puțin spre stânga */
-  .footer-links{
-    text-align: center !important;
-    transform: translateX(-4px) !important;
+  .contact-items {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1rem;
   }
 
-  .footer-section.is-open .footer-links{
-    transform: translateX(-4px) !important;
-    height: auto;
+  .contact-item {
+    width: 100%;
+    max-width: 300px;
+    justify-content: flex-start;
   }
 
-  /* Linie între secțiuni pe mobil */
-  .footer-section + .footer-section::before{
-    content: "" !important;
-    display: block !important;
-    position: relative !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 100vw !important;
-    height: 1px !important;
-    margin: 0.75rem 0 !important;
+  .footer-links-grid {
+    max-width: 100%;
+    padding: 0;
+    /* spațiu față de contact items — fără divider */
+    margin-top: 1.6rem;
+  }
+
+  .footer-section {
+    padding: 0;
+  }
+
+  .footer-toggle {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    text-align: center;
+  }
+
+  /* ── Linie DEASUPRA primei secțiuni (Companie) ── */
+  .footer-section:first-child::before {
+    content: "";
+    display: block;
+    width: 80%;
+    max-width: 280px;
+    height: 1px;
+    margin: 0.75rem auto;
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(110, 91, 74, .08) 5%,
-      rgba(110, 91, 74, .28) 20%,
       rgba(110, 91, 74, .50) 38%,
       rgba(110, 91, 74, .62) 50%,
       rgba(110, 91, 74, .50) 62%,
-      rgba(110, 91, 74, .28) 80%,
-      rgba(110, 91, 74, .08) 95%,
       transparent 100%
-    ) !important;
+    );
+  }
+
+  /* ── Linie ÎNTRE secțiuni ── */
+  .footer-section + .footer-section::before {
+    content: "";
+    display: block;
+    width: 80%;
+    max-width: 280px;
+    height: 1px;
+    margin: 0.75rem auto;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(110, 91, 74, .50) 38%,
+      rgba(110, 91, 74, .62) 50%,
+      rgba(110, 91, 74, .50) 62%,
+      transparent 100%
+    );
+  }
+
+  /* ── Linie DUPĂ ultima secțiune (Resources) ── */
+  .footer-section:last-child::after {
+    content: "";
+    display: block;
+    width: 80%;
+    max-width: 280px;
+    height: 1px;
+    margin: 0.75rem auto 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(110, 91, 74, .50) 38%,
+      rgba(110, 91, 74, .62) 50%,
+      rgba(110, 91, 74, .50) 62%,
+      transparent 100%
+    );
   }
 }
 
-
-
 /* ======================================================
-   DESKTOP ≥768px — 3 linii verticale simetrice
+   DESKTOP ≥768px
    ===================================================== */
-@media (min-width: 768px){
+@media (min-width: 768px) {
 
-  .footer-links-grid{
-    display:flex;
-    justify-content:center;
-    align-items:stretch;
+  .footer-links-grid {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
     gap: clamp(2rem, 4vw, 3rem);
     padding-inline: 24px;
     max-width: var(--grid);
@@ -324,49 +389,53 @@
     background-image:
       linear-gradient(180deg, transparent, rgba(110, 91, 74, .10), transparent),
       linear-gradient(180deg, transparent, rgba(110, 91, 74, .10), transparent),
+      linear-gradient(180deg, transparent, rgba(110, 91, 74, .10), transparent),
       linear-gradient(180deg, transparent, rgba(110, 91, 74, .40), transparent),
-      linear-gradient(180deg, transparent, rgba(110, 91, 74, .40), transparent) !important;
+      linear-gradient(180deg, transparent, rgba(110, 91, 74, .40), transparent),
+      linear-gradient(180deg, transparent, rgba(110, 91, 74, .40), transparent);
 
     background-repeat: no-repeat;
     background-size:
-      3px var(--vh), 3px var(--vh),
-      1px var(--vh), 1px var(--vh);
+      3px var(--vh), 3px var(--vh), 3px var(--vh),
+      1px var(--vh), 1px var(--vh), 1px var(--vh);
 
     background-position:
-      var(--inset) 50%, calc(100% - var(--inset)) 50%,
-      var(--inset) 50%, calc(100% - var(--inset)) 50%;
+      var(--inset) 50%, calc(100% - var(--inset)) 50%, 50% 50%,
+      var(--inset) 50%, calc(100% - var(--inset)) 50%, 50% 50%;
   }
 
-  .footer-section{
+  .footer-section {
     flex: 1;
     padding: .65rem 1.1rem;
     overflow: visible;
   }
 
-  /* pe desktop acordionul e permanent deschis, fără shift */
-  .footer-links{
-    height: auto !important;
+  /* Desktop: acordionul mereu deschis */
+  .footer-links {
+    max-height: none !important;
     opacity: 1 !important;
-    transform: none !important;
+    pointer-events: auto !important;
     overflow: visible !important;
-    margin: .3rem 0 .3rem;
+    margin: .3rem 0;
+    transition: none !important;
   }
 
-  .footer-links[hidden]{ display:block !important; }
-  .footer-toggle{ cursor: default; }
-  .footer-toggle-icon{ display:none !important; }
+  .footer-toggle { cursor: default; }
+  .footer-toggle-icon { display: none !important; }
+
+  /* Fără linii mobile pe desktop */
+  .footer-section:first-child::before,
+  .footer-section:last-child::after {
+    display: none !important;
+  }
 }
 
 /* very small screens */
 @media (max-width: 480px) {
-  .site-footer{ padding: 1.8rem 0 1.2rem; }
-  .footer-inner::after{ width: 140px; }
-
   .contact-item {
-    width: 100%;
-    max-width: 320px;
-    justify-content: flex-start;
+    max-width: 100%;
   }
+
 }
 
 /* FOCUS STATES */
@@ -376,86 +445,37 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-/* ================= NOMA FIX ALIGN MOBILE ================= */
-@media (max-width: 767px){
-
-  /* 1. NU mai mutăm grid-ul sau lista cu text-indent */
-  .footer-links-grid,
-  .footer-links{
-    text-indent: 0 !important;
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  .footer-links {
+    transition: opacity 0.1ms ease !important;
   }
-
-  /* 2. Titlurile rămân perfect centrate */
-  .footer-toggle{
-    justify-content: center;
-    text-align: center;
-  }
-
-  /* 3. Blocul cu linkuri: centrat + mutat puțin la stânga */
-  .footer-links{
-    text-align: center;
-    transform: translateX(-10px) !important;
-  }
-
-  .footer-section.is-open .footer-links{
-    transform: translateX(-10px) !important;
+  .footer-toggle-icon {
+    transition: none !important;
   }
 }
 
-/* =====================================================
-   HOVER ELEGANT CU LINIE ASCUȚITĂ - CA LA NAVBAR
-   ===================================================== */
-
-.footer-contact-desc a {
-  position: relative;
-  color: #b8956a;
-  font-weight: 500;
-  text-decoration: none;
-  padding-bottom: 4px;
-  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-block;
-}
-
-/* LINIE ASCUȚITĂ DE LA CENTRU */
-.footer-contact-desc a::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #b8956a,
-    transparent
-  );
-  transform: translateX(-50%);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.footer-contact-desc a:hover {
-  color: #8a6b43;
-}
-
-.footer-contact-desc a:hover::after {
-  width: 100%;
-}
-
-/* FOCUS STATE PENTRU ACCESIBILITATE */
-.footer-contact-desc a:focus-visible {
-  outline: 2px solid #b8956a;
-  outline-offset: 4px;
-  border-radius: 2px;
-}
-
-@media (max-width: 768px) {
-  .contact-items {
-    gap: 0.6rem;
+/* Guard hover effects to mouse-only devices */
+@media (hover: none) {
+  .contact-item:hover {
+    transform: none;
+    box-shadow: 0 10px 26px rgba(184, 149, 106, .25);
   }
-
-  .contact-item {
-    min-width: 210px;
-    max-width: 100%;
+  .contact-item:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+    transition: all 0.08s ease;
+  }
+  .footer-social a:hover {
+    transform: none;
+    box-shadow: 0 10px 24px rgba(184, 149, 106, .20);
+  }
+  .footer-social a:active {
+    opacity: 0.85;
+    transform: scale(0.93);
+    transition: all 0.08s ease;
+  }
+  .footer-cta-link:hover {
+    color: #a37c4e;
   }
 }

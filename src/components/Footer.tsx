@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import './Footer.css';
 
@@ -7,44 +7,20 @@ const Footer = () => {
   const { t } = useLanguage();
 
   const toggleSection = (section: string) => {
-    setOpenSection(openSection === section ? null : section);
+    setOpenSection(prev => prev === section ? null : section);
   };
-
-  useEffect(() => {
-    const sections = document.querySelectorAll('[data-footer-accordion]');
-    sections.forEach((section) => {
-      const button = section.querySelector('.footer-toggle');
-      const content = section.querySelector('.footer-links');
-
-      if (button && content) {
-        button.addEventListener('click', () => {
-          const isOpen = section.classList.contains('is-open');
-          section.classList.toggle('is-open');
-
-          if (!isOpen) {
-            (content as HTMLElement).style.height = 'auto';
-            const height = (content as HTMLElement).scrollHeight;
-            (content as HTMLElement).style.height = '0';
-            setTimeout(() => {
-              (content as HTMLElement).style.height = `${height}px`;
-            }, 10);
-          } else {
-            (content as HTMLElement).style.height = '0';
-          }
-        });
-      }
-    });
-  }, []);
 
   return (
     <footer className="site-footer">
       <div className="footer-inner">
+
         <div className="footer-contact">
           <h2 className="footer-contact-title">{t.footer.contactTitle}</h2>
           <p className="footer-contact-desc">
-            {t.footer.contactDesc}{' '}
-            <a href="/contact">{t.footer.contactDescLink1}</a> {t.footer.contactDesc.includes('sau') ? '' : ''}{' '}
-            <a href="/contact">{t.footer.contactDescLink2}</a>
+            {t.footer.contactDesc} {' '}
+            <a href="/contact" className="footer-cta-link">
+              {t.footer.contactDescLink1}
+            </a>
           </p>
 
           <div className="contact-items">
@@ -76,10 +52,11 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="footer-divider" />
-
         <div className="footer-links-grid">
-          <section className={`footer-section ${openSection === 'company' ? 'is-open' : ''}`} data-footer-accordion>
+
+          <section
+            className={`footer-section ${openSection === 'company' ? 'is-open' : ''}`}
+          >
             <button
               className="footer-toggle"
               onClick={() => toggleSection('company')}
@@ -101,7 +78,9 @@ const Footer = () => {
             </ul>
           </section>
 
-          <section className={`footer-section ${openSection === 'resources' ? 'is-open' : ''}`} data-footer-accordion>
+          <section
+            className={`footer-section ${openSection === 'resources' ? 'is-open' : ''}`}
+          >
             <button
               className="footer-toggle"
               onClick={() => toggleSection('resources')}
@@ -121,6 +100,7 @@ const Footer = () => {
               <li><a href="/sitemap.xml">{t.footer.sitemapXml}</a></li>
             </ul>
           </section>
+
         </div>
 
         <div className="footer-social">
