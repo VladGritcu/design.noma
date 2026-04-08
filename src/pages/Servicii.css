@@ -465,13 +465,119 @@
 }
 
 /* =========================================================
+   COMPARISON TABLE
+========================================================= */
+
+.comparison-section {
+  padding: 80px 0 120px;
+  background-color: #fdf9f3;
+}
+
+.comparison-table-wrapper {
+  margin-top: 48px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(176, 141, 62, 0.12);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.comparison-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  border-bottom: 1px solid rgba(176, 141, 62, 0.08);
+  transition: background-color 0.3s ease;
+}
+
+.comparison-row:last-child {
+  border-bottom: none;
+}
+
+.comparison-row:not(.header):hover {
+  background-color: rgba(176, 141, 62, 0.02);
+}
+
+.comparison-row.header {
+  background-color: rgba(176, 141, 62, 0.03);
+  border-bottom: 2px solid rgba(176, 141, 62, 0.15);
+}
+
+.comparison-cell {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 14.5px;
+  color: #4a4a4a;
+  text-align: center;
+}
+
+.comparison-cell.feature {
+  justify-content: flex-start;
+  text-align: left;
+  font-weight: 500;
+  color: #1a1a1a;
+  border-right: 1px solid rgba(176, 141, 62, 0.08);
+}
+
+.comparison-row.header .comparison-cell {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.comparison-cell.premium {
+  background-color: rgba(176, 141, 62, 0.02);
+  font-weight: 500;
+}
+
+.comparison-cell svg {
+  color: #b08d3e;
+}
+
+/* MOBIL COMPARISON */
+@media (max-width: 768px) {
+  .comparison-section {
+    padding: 20px 0 60px;
+  }
+  
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+  
+  .comparison-grid {
+    min-width: 600px; /* Force scroll on mobile */
+  }
+  
+  .comparison-cell {
+    padding: 16px 12px;
+    font-size: 13px;
+  }
+  
+  .comparison-row.header .comparison-cell {
+    font-size: 15px;
+  }
+}
+
+/* =========================================================
    ACCESIBILITATE
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .pricing-card,
   .pricing-card::before,
-  .pricing-card::after {
+  .pricing-card::after,
+  .comparison-row {
     transition: none !important;
     animation: none !important;
   }

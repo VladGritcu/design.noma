@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import './Despre.css';
 
 const Despre = () => {
@@ -30,20 +32,15 @@ const Despre = () => {
   return (
     <div className="despre">
       <section className="despre-hero">
-        <h1 className="page-title blur-reveal" style={{ '--delay': '0s' } as React.CSSProperties}>
-          {t.about.pageTitle}
-        </h1>
-        
-        <div className="hero-separator blur-reveal" style={{ '--delay': '0.15s' } as React.CSSProperties}>
-          <div className="line-left"></div>
-          <div className="diamond"></div>
-          <div className="line-right"></div>
+        <div className="container">
+          <SectionHeader 
+            title={t.about.pageTitle}
+            subtitle={t.about.pageSubtitle}
+          />
         </div>
-
-        <p className="page-subtitle blur-reveal" style={{ '--delay': '0.3s' } as React.CSSProperties}>
-          {t.about.pageSubtitle}
-        </p>
       </section>
+
+      <LuxuryDivider />
 
       <section className="despre-content">
         <div className="despre-container">
@@ -74,13 +71,12 @@ const Despre = () => {
         </div>
       </section>
 
-      {/* Sharp Divider Line */}
-      <hr className="noma-divider noma-reveal" style={{ '--delay': '0.1s' } as React.CSSProperties} />
+      <LuxuryDivider />
 
       <section className="values-section">
-        <h2 className="section-title noma-reveal" style={{ '--delay': '0s' } as React.CSSProperties}>
-          {t.about.valuesTitle}
-        </h2>
+        <SectionHeader 
+          title={t.about.valuesTitle}
+        />
 
         <div className="values-grid">
           <div className="value-card noma-reveal" style={{ '--delay': '0.1s' } as React.CSSProperties}>
@@ -133,8 +129,7 @@ const Despre = () => {
         </div>
       </section>
 
-      {/* Sharp Divider Line */}
-      <hr className="noma-divider noma-reveal" style={{ '--delay': '0.1s' } as React.CSSProperties} />
+      <LuxuryDivider />
 
       <section className="stats-section">
         <div className="stats-grid">

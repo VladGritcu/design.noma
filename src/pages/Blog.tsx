@@ -1,4 +1,6 @@
 import { useLanguage } from '../i18n/LanguageContext';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import './Blog.css';
 
 const Blog = () => {
@@ -13,8 +15,11 @@ const Blog = () => {
   return (
     <div className="blog-page">
       <div className="blog-container">
-        <h1 className="blog-title">{t.blog.pageTitle}</h1>
-        <p className="blog-intro">{t.blog.intro}</p>
+        <SectionHeader 
+          title={t.blog.pageTitle}
+          subtitle={t.blog.intro}
+          centered={true}
+        />
 
         <div className="blog-list">
           {posts.map((post) => (
@@ -27,6 +32,8 @@ const Blog = () => {
             </article>
           ))}
         </div>
+
+        <LuxuryDivider delay={0.1} />
       </div>
     </div>
   );

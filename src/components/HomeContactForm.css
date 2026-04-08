@@ -91,19 +91,98 @@
     0 4px 10px rgba(176, 141, 62, 0.05);
 }
 
-.form-progress-subtle {
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS BAR — ULTRA LUXURY
+═══════════════════════════════════════════════════════════════ */
+
+.form-progress {
   width: 100%;
-  height: 2px;
+  height: 3px;
   background: rgba(176, 141, 62, 0.1);
+  border-radius: 9999px;
+  overflow: visible;        /* allow glow to bleed */
   margin-bottom: 32px;
-  border-radius: 2px;
-  overflow: hidden;
+  position: relative;
 }
 
-.form-progress-bar {
+/* Subtle track texture */
+.form-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg,
+    rgba(196, 162, 74, 0.06),
+    rgba(196, 162, 74, 0.12),
+    rgba(196, 162, 74, 0.06)
+  );
+}
+
+.form-progress__bar {
   height: 100%;
-  background: #b08d3e;
-  border-radius: 2px;
+  border-radius: 9999px;
+  position: relative;
+
+  /* Tri-stop champagne gradient */
+  background: linear-gradient(
+    90deg,
+    #c4a24a 0%,
+    #e8d08a 45%,
+    #f5e8b0 72%,
+    #d4aa55 100%
+  );
+  background-size: 200% 100%;
+  animation: progressShimmer 2.8s ease-in-out infinite;
+
+  /* Layered glow */
+  box-shadow:
+    0 0  6px 1px rgba(226, 201, 126, 0.55),
+    0 0 14px 2px rgba(196, 162, 74,  0.35),
+    0 0 28px 4px rgba(196, 162, 74,  0.18);
+}
+
+/* Travelling light sweep */
+.form-progress__bar::after {
+  content: '';
+  position: absolute;
+  inset: -1px 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent 20%,
+    rgba(255, 245, 200, 0.75) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: progressBeam 2.8s ease-in-out infinite;
+}
+
+/* Bright trailing dot at the head */
+.form-progress__bar::before {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f5e8b0;
+  box-shadow:
+    0 0  4px 2px rgba(245, 232, 176, 0.9),
+    0 0 10px 4px rgba(226, 201, 126, 0.6),
+    0 0 20px 6px rgba(196, 162,  74, 0.3);
+}
+
+@keyframes progressShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position:   0% 0; }
+}
+
+@keyframes progressBeam {
+  0%   { background-position: 200% 0; opacity: 0.6; }
+  50%  { opacity: 1; }
+  100% { background-position:   0% 0; opacity: 0.6; }
 }
 
 .luxury-form-rows {

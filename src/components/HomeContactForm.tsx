@@ -131,11 +131,12 @@ const HomeContactForm = () => {
           transition={{ duration: 0.8, delay: 0.2, ease: EASE_OUT }}
         >
           <div className="form-luxury-inner">
-            <div className="form-progress-subtle">
+            {/* Progress bar — Ultra Luxury */}
+            <div className="form-progress">
               <motion.div 
-                className="form-progress-bar"
+                className="form-progress__bar"
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.55, ease: [0.22, 0.61, 0.36, 1] }}
               />
             </div>
 

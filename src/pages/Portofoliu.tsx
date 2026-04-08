@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import ImageSlider from '../components/ImageSlider';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import { projects } from '../data/projects';
 import './Portofoliu.css';
 
@@ -47,21 +49,14 @@ const Portofoliu = () => {
     <div className="portofoliu">
       <section className="portofoliu-hero">
         <div className="container">
-          <h1 className="page-title blur-reveal" style={{ '--delay': '0s' } as React.CSSProperties}>
-            {t.portfolio.pageTitle}
-          </h1>
-          
-          <div className="hero-separator blur-reveal" style={{ '--delay': '0.15s' } as React.CSSProperties}>
-            <div className="line-left"></div>
-            <div className="diamond"></div>
-            <div className="line-right"></div>
-          </div>
-
-          <p className="page-subtitle blur-reveal" style={{ '--delay': '0.3s' } as React.CSSProperties}>
-            {t.portfolio.pageSubtitle}
-          </p>
+          <SectionHeader 
+            title={t.portfolio.pageTitle}
+            subtitle={t.portfolio.pageSubtitle}
+          />
         </div>
       </section>
+
+      <LuxuryDivider />
 
       <section className="projects-section">
         <div className="container">

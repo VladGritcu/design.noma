@@ -1,4 +1,6 @@
 import { useLanguage } from '../i18n/LanguageContext';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import './Cursuri.css';
 
 const Cursuri = () => {
@@ -7,8 +9,10 @@ const Cursuri = () => {
   return (
     <div className="cursuri-page">
       <div className="cursuri-container">
-        <h1>{t.courses.pageTitle}</h1>
-        <p className="cursuri-intro">{t.courses.intro}</p>
+        <SectionHeader 
+          title={t.courses.pageTitle}
+          centered={true}
+        />
 
         <div className="cursuri-list">
           <div className="curs-card">
@@ -29,6 +33,8 @@ const Cursuri = () => {
             <p>{t.courses.course3Desc}</p>
           </div>
         </div>
+
+        <LuxuryDivider delay={0.1} />
 
         <div className="curs-cta">
           <p>{t.courses.ctaText}</p>

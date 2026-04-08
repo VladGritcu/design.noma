@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../i18n/LanguageContext';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import './Servicii.css';
 
 const SITE_URL = 'https://nomastudio.md';
@@ -122,54 +124,6 @@ const Servicii = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  /* ── Hero variants ─────────────────────────────────── */
-  const heroContainer: Variants = {
-    initial: {},
-    animate: {
-      transition: {
-        staggerChildren: isMobile ? 0.08 : 0.12,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const titleAnim: Variants = shouldReduce ? {
-    initial: { opacity: 1, y: 0 },
-    animate: { opacity: 1, y: 0 }
-  } : {
-    initial: { opacity: 0, y: isMobile ? 22 : 36, filter: isMobile ? 'none' : 'blur(8px)' },
-    animate: { opacity: 1, y: 0, filter: isMobile ? 'none' : 'blur(0px)', transition: { duration: 1.0, ease: EASE } },
-  };
-
-  const dividerContainerAnim: Variants = {
-    initial: {},
-    animate: { transition: { staggerChildren: 0.1 } },
-  };
-
-  const lineAnim: Variants = shouldReduce ? {
-    initial: { scaleX: 1, opacity: 1 },
-    animate: { scaleX: 1, opacity: 1 }
-  } : {
-    initial: { scaleX: 0, opacity: 0 },
-    animate: { scaleX: 1, opacity: 1, transition: { duration: 0.9, ease: EASE } },
-  };
-
-  const diamondAnim: Variants = shouldReduce ? {
-    initial: { opacity: 1, scale: 1, rotate: 45 },
-    animate: { opacity: 1, scale: 1, rotate: 45 }
-  } : {
-    initial: { opacity: 0, scale: 0, rotate: 45 },
-    animate: { opacity: 1, scale: 1, rotate: 45, transition: { duration: 0.6, ease: EASE } },
-  };
-
-  const subtitleAnim: Variants = shouldReduce ? {
-    initial: { opacity: 1, y: 0 },
-    animate: { opacity: 1, y: 0 }
-  } : {
-    initial: { opacity: 0, y: 18, filter: isMobile ? 'none' : 'blur(4px)' },
-    animate: { opacity: 1, y: 0, filter: isMobile ? 'none' : 'blur(0px)', transition: { duration: 0.8, ease: EASE } },
-  };
-
   /* ── Card variants ──────────────────────────────────── */
   const gridContainer: Variants = {
     initial: {},
@@ -246,49 +200,14 @@ const Servicii = () => {
         {/* ── HERO ─────────────────────────────────────── */}
         <section className="servicii-hero" aria-labelledby="servicii-heading">
           <div className="container">
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={heroContainer}
-            >
-              <motion.h1
-                className="page-title"
-                id="servicii-heading"
-                variants={titleAnim}
-              >
-                {t.services.pageTitle}
-              </motion.h1>
-
-              <motion.div
-                className="hero-divider"
-                aria-hidden="true"
-                variants={dividerContainerAnim}
-              >
-                <motion.span
-                  className="divider-line"
-                  variants={lineAnim}
-                  style={{ transformOrigin: 'right center' }}
-                />
-                <motion.span
-                  className="divider-diamond"
-                  variants={diamondAnim}
-                />
-                <motion.span
-                  className="divider-line"
-                  variants={lineAnim}
-                  style={{ transformOrigin: 'left center' }}
-                />
-              </motion.div>
-
-              <motion.p
-                className="page-subtitle"
-                variants={subtitleAnim}
-              >
-                {t.services.pageSubtitle}
-              </motion.p>
-            </motion.div>
+            <SectionHeader 
+              title={t.services.pageTitle}
+              subtitle={t.services.pageSubtitle}
+            />
           </div>
         </section>
+
+        <LuxuryDivider delay={0.6} />
 
         {/* ── PRICING ──────────────────────────────────── */}
         <section className="pricing-section" aria-labelledby="pricing-heading">
@@ -401,6 +320,57 @@ const Servicii = () => {
             </motion.div>
           </div>
         </section>
+
+        <LuxuryDivider delay={0.1} />
+
+        {/* ── COMPARISON ───────────────────────────────── */}
+        <section className="comparison-section" aria-labelledby="comparison-heading">
+          <div className="container">
+            <SectionHeader 
+              title={t.services.comparison}
+              centered={true}
+            />
+            
+            <motion.div 
+              className="comparison-table-wrapper"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: EASE }}
+            >
+              <div className="comparison-grid">
+                {/* Headers */}
+                <div className="comparison-row header">
+                  <div className="comparison-cell feature">{t.services.comparisonHeaders.feature}</div>
+                  <div className="comparison-cell">{t.services.comparisonHeaders.basic}</div>
+                  <div className="comparison-cell">{t.services.comparisonHeaders.technic}</div>
+                  <div className="comparison-cell premium">{t.services.comparisonHeaders.signature}</div>
+                </div>
+
+                {/* Rows mapping from translations */}
+                {[
+                  { key: 'siteVisit', basic: true, technic: true, signature: true },
+                  { key: 'surveyPlan', basic: true, technic: true, signature: true },
+                  { key: 'techAlbum', basic: false, technic: true, signature: true },
+                  { key: 'furnitureVariants', basic: '1 variantă', technic: '2 variante', signature: '2 variante' },
+                  { key: 'renders3d', basic: 'Fără modificări', technic: '1 modif./cameră', signature: '1 modif./cameră' },
+                  { key: 'postConsultancy', basic: false, technic: true, signature: true },
+                  { key: 'partnerVisits', basic: false, technic: false, signature: '5 vizite' },
+                  { key: 'siteSupervision', basic: false, technic: false, signature: true },
+                ].map((row, idx) => (
+                  <div key={row.key} className="comparison-row" style={{ transitionDelay: `${idx * 0.05}s` }}>
+                    <div className="comparison-cell feature">{t.services.comparisonRows[row.key as keyof typeof t.services.comparisonRows]}</div>
+                    <div className="comparison-cell">{typeof row.basic === 'boolean' ? (row.basic ? <CheckIcon /> : '—') : row.basic}</div>
+                    <div className="comparison-cell">{typeof row.technic === 'boolean' ? (row.technic ? <CheckIcon /> : '—') : row.technic}</div>
+                    <div className="comparison-cell premium">{typeof row.signature === 'boolean' ? (row.signature ? <CheckIcon /> : '—') : row.signature}</div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <LuxuryDivider delay={0.2} />
 
       </main>
     </>

@@ -1,7 +1,7 @@
 .cursuri-page {
   min-height: 100vh;
   background: var(--noma-page-bg);
-  padding: 2rem 1.5rem 4rem;
+  padding: clamp(120px, 12vh, 140px) 24px 60px;
 }
 
 .cursuri-container {

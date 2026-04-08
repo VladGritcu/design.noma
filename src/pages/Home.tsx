@@ -1,28 +1,15 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion, useReducedMotion, Variants } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '../i18n/LanguageContext';
 import HeroProjectSlider from '../components/HeroProjectSlider';
 import HomeContactForm from '../components/HomeContactForm';
+import SectionHeader from '../components/SectionHeader';
+import LuxuryDivider from '../components/LuxuryDivider';
 import { projects } from '../data/projects';
 import './Home.css';
 
 const SITE_URL = 'https://nomastudio.md';
-
-const fadeUp = (isMobile: boolean): Variants => ({
-  hidden: { 
-    opacity: 0, 
-    y: isMobile ? 18 : 30, 
-    filter: isMobile ? 'none' : 'blur(10px)' 
-  },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    filter: isMobile ? 'none' : 'blur(0px)',
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
-});
 
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
@@ -61,42 +48,11 @@ const structuredData = {
   ],
 };
 
-const SectionDivider = () => (
-  <div className="section-divider-luxury">
-    <motion.div 
-      className="divider-line-main"
-      initial={{ scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1.5, ease: "easeOut" }}
-    />
-    <div className="divider-center">
-      <div className="divider-dot" />
-    </div>
-  </div>
-);
+
 
 const Home = () => {
   const { t } = useLanguage();
-  const shouldReduceMotion = useReducedMotion();
   const aboutLines = t.home.aboutTitle.split('\n');
-
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const currentFadeUp = fadeUp(isMobile);
-
-  const motionProps = shouldReduceMotion ? {} : {
-    initial: "hidden",
-    whileInView: "show",
-    viewport: { once: true, margin: isMobile ? "-40px" : "-100px" },
-    variants: currentFadeUp
-  };
 
   return (
     <>
@@ -111,20 +67,19 @@ const Home = () => {
       <div className="home">
         <HeroProjectSlider projects={projects} />
 
-        <SectionDivider />
+        <LuxuryDivider delay={0.8} />
 
         {/* --- SERVICES SECTION --- */}
-        <motion.section 
+        <section 
           className="services-preview" 
           aria-labelledby="services-heading"
-          {...(motionProps as any)}
         >
           <div className="container">
-            <div className="section-header">
-              <span className="section-eyebrow">Studio Services</span>
-              <h2 id="services-heading" className="editorial-title">{t.home.whatWeOffer}</h2>
-              <p className="section-subtitle">{t.home.servicesSubtitle}</p>
-            </div>
+            <SectionHeader 
+              title={t.home.whatWeOffer}
+              subtitle={t.home.servicesSubtitle}
+              eyebrow="Studio Services"
+            />
 
             <motion.div 
               className="services-grid" 
@@ -160,24 +115,28 @@ const Home = () => {
               </Link>
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        <SectionDivider />
+        <LuxuryDivider />
 
         {/* --- ABOUT SECTION --- */}
-        <motion.section 
+        <section 
           className="about-preview" 
           aria-labelledby="about-heading"
-          {...(motionProps as any)}
         >
           <div className="about-container">
             <div className="about-text">
-              <span className="section-eyebrow">The Studio</span>
-              <h2 id="about-heading" className="editorial-title">
-                {aboutLines.map((line, i) => (
-                  <span key={i}>{line}{i < aboutLines.length - 1 && <br />}</span>
-                ))}
-              </h2>
+              <SectionHeader 
+                centered={false}
+                eyebrow="The Studio"
+                title={
+                  <>
+                    {aboutLines.map((line, i) => (
+                      <span key={i}>{line}{i < aboutLines.length - 1 && <br />}</span>
+                    ))}
+                  </>
+                }
+              />
               <p className="editorial-body">{t.home.aboutText}</p>
               <Link to="/despre" className="cta-link-luxury">
                 {t.home.aboutLink}
@@ -195,9 +154,9 @@ const Home = () => {
               <div className="image-overlay-glow" />
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        <SectionDivider />
+        <LuxuryDivider />
 
         {/* --- CONTACT SECTION --- */}
         <HomeContactForm />
