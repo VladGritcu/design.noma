@@ -159,7 +159,12 @@ const Contact = () => {
   useEffect(() => {
     const filled = FORM_FIELDS.filter(f => {
       const v = watchedValues[f];
-      return v && v.length > 0 && !errors[f];
+      if (!v || errors[f]) return false;
+      if (f === 'phone') {
+        const digits = v.replace(/\D/g, '');
+        return digits.length >= 7;
+      }
+      return v.length > 0;
     }).length;
     setProgress((filled / FORM_FIELDS.length) * 100);
   }, [watchedValues, errors]);
